@@ -326,57 +326,52 @@
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
 
-    <script>
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-        }
+ <script>
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    }
 
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
 
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(this.dataset.section).classList.add('active');
-            });
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(this.dataset.section).classList.add('active');
         });
+    });
 
-        function createMapGrid() {
-            const grid = document.getElementById('mapGrid');
-            for (let i = 0; i < 400; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'grid-cell';
-                grid.appendChild(cell);
+    function createMapGrid() {
+        const grid = document.getElementById('mapGrid');
+        for (let i = 0; i < 400; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            grid.appendChild(cell);
+        }
+    }
+
+    function openTelegramMap() {
+        if (window.Telegram && window.Telegram.WebApp) {
+            try {
+                window.Telegram.WebApp.requestLocation(function(location) {
+                    // After getting user location, show the map with the location
+                    window.Telegram.WebApp.showLocation(location.latitude, location.longitude);
+                });
+            } catch (e) {
+                console.error('Error opening map:', e);
             }
         }
+    }
 
-        function openTelegramMap() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                try {
-                    window.Telegram.WebApp.showMap({
-                        lat: 51.1657,
-                        lon: 10.4515,
-                        zoom: 5,
-                        title: "Blockchain Treasures",
-                        message: "Find valuable treasures across Europe!"
-                    });
-                } catch (e) {
-                    console.error('Error opening map:', e);
-                }
-            } else {
-                console.log('Telegram WebApp not available');
-            }
-        }
+    createMapGrid();
 
-        createMapGrid();
-
-        if (window.Telegram.WebApp) {
-            window.Telegram.WebApp.onEvent('viewportChanged', function() {
-                document.documentElement.style.setProperty('--tg-viewport-height', 
-                    `${window.Telegram.WebApp.viewportHeight}px`);
-            });
-        }
-    </script>
+    if (window.Telegram.WebApp) {
+        window.Telegram.WebApp.onEvent('viewportChanged', function() {
+            document.documentElement.style.setProperty('--tg-viewport-height', 
+                `${window.Telegram.WebApp.viewportHeight}px`);
+        });
+    }
+</script>
 </body>
 </html>
