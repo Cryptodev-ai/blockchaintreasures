@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -340,25 +341,10 @@
             <span>TREASURES</span>
         </div>
 
-        <nav class="nav-container">
-            <div class="nav-item active" data-section="treasures">
-                <div class="nav-icon">
-                    <i class="fas fa-store"></i>
-                </div>
-                <span class="nav-text">TREASURES</span>
-            </div>
-            <div class="nav-item" data-section="staking">
-                <div class="nav-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <span class="nav-text">STAKING</span>
-            </div>
-            <div class="nav-item" data-section="nft">
-                <div class="nav-icon">
-                    <i class="fas fa-cube"></i>
-                </div>
-                <span class="nav-text">NFTs</span>
-            </div>
+        <nav class="dot-nav">
+            <div class="dot active" data-label="Treasures" data-section="treasures"></div>
+            <div class="dot" data-label="Staking" data-section="staking"></div>
+            <div class="dot" data-label="NFTs" data-section="nft"></div>
         </nav>
 
         <section id="treasures" class="section active">
@@ -390,36 +376,65 @@
             </div>
         </section>
 
-        <div class="social-links">
-            <a href="#" class="social-icon">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-icon">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="social-icon">
-                <i class="fab fa-tiktok"></i>
-            </a>
-            <a href="#" class="social-icon">
-                <i class="fab fa-telegram"></i>
-            </a>
+        <div class="social-menu">
+            <div class="social-main">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="social-items">
+                <a href="#" class="social-item" style="transform: rotate(0deg) translate(75px) rotate(0deg)">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-item" style="transform: rotate(72deg) translate(75px) rotate(-72deg)">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-item" style="transform: rotate(144deg) translate(75px) rotate(-144deg)">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-item" style="transform: rotate(216deg) translate(75px) rotate(-216deg)">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="#" class="social-item" style="transform: rotate(288deg) translate(75px) rotate(-288deg)">
+                    <i class="fab fa-telegram"></i>
+                </a>
+            </div>
         </div>
 
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
 
-   <script>
+    <script>
+        // Initialize Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+
+        // Navigation functionality
+        document.querySelectorAll('.dot').forEach(dot => {
+            dot.addEventListener('click', function() {
+                document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(this.dataset.section).classList.add('active');
+            });
+        });
+
+        // Social menu toggle
+        document.querySelector('.social-main').addEventListener('click', function() {
+            document.querySelector('.social-menu').classList.toggle('active');
+
+ <script>
+    // Initialize Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
     }
 
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    // Navigation functionality
+    document.querySelectorAll('.dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
             this.classList.add('active');
 
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -427,20 +442,16 @@
         });
     });
 
-    function createMapGrid() {
-        const grid = document.getElementById('mapGrid');
-        for (let i = 0; i < 400; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'grid-cell';
-            grid.appendChild(cell);
-        }
-    }
+    // Social menu toggle
+    document.querySelector('.social-main').addEventListener('click', function() {
+        document.querySelector('.social-menu').classList.toggle('active');
+    });
 
+    // Map functionality
     function openTelegramMap() {
         if (window.Telegram && window.Telegram.WebApp) {
             try {
                 window.Telegram.WebApp.requestLocation(function(location) {
-                    // After getting user location, show the map with the location
                     window.Telegram.WebApp.showLocation(location.latitude, location.longitude);
                 });
             } catch (e) {
@@ -449,8 +460,7 @@
         }
     }
 
-    createMapGrid();
-
+    // Handle viewport changes
     if (window.Telegram.WebApp) {
         window.Telegram.WebApp.onEvent('viewportChanged', function() {
             document.documentElement.style.setProperty('--tg-viewport-height', 
