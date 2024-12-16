@@ -7,10 +7,8 @@
     <title>Blockchain Treasures</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.webgl@0.3.0/dist/leaflet.webgl.js"></script>
-<script src="https://unpkg.com/three@0.137.0/build/three.min.js"></script>
+<script src="https://unpkg.com/globe.gl@2.32.1/dist/globe.gl.min.js"></script>
+<script src="https://unpkg.com/d3@7"></script>
     <!-- Include Telegram WebApp 2.0 library -->
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
     <!-- Add Telegram WebApp 2.0 meta tags -->
@@ -476,28 +474,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initializeGlobeMap() {
     const mapPreview = document.querySelector('.map-preview');
-    mapPreview.innerHTML = '<div id="globe" style="width: 100%; height: 100%;"></div>';
+    mapPreview.innerHTML = '<div id="globeViz" style="width: 100%; height: 100%;"></div>';
 
-    // Initialize WebGL Globe
-    const globe = L.map('globe', {
-        worldCopyJump: false,
-        zoomControl: false,
-        minZoom: 2,
-        maxZoom: 8,
-        scrollWheelZoom: true,
-        dragging: true,
-        webgl: true,
-        globe: true  // Enable globe mode
-    }).setView([20, 0], 2);
-
-    // Add dark theme map layer with globe projection
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors, &copy; CartoDB',
-        noWrap: true,
-        globe: true
-    }).addTo(globe);
-
-    // Define treasure locations
     const treasures = [
         { lat: 40.7128, lng: -74.0060, name: "New York Treasure" },
         { lat: 34.0522, lng: -118.2437, name: "LA Treasure" },
@@ -505,42 +483,45 @@ function initializeGlobeMap() {
         { lat: 35.6762, lng: 139.6503, name: "Tokyo Treasure" }
     ];
 
-    // Add markers for each treasure
-    treasures.forEach(treasure => {
-        const marker = L.marker([treasure.lat, treasure.lng], {
-            icon: L.divIcon({
-                className: 'custom-marker',
-                html: '',
-                iconSize: [20, 20]
-            })
-        }).addTo(globe);
+    const globe = Globe()
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+        .pointsData(treasures)
+        .pointLat('lat')
+        .pointLng('lng')
+        .pointColor(() => '#FF7A00')
+        .pointAltitude(0.1)
+        .pointRadius(0.5)
+        .pointsMerge(true)
+        .pointsTransitionDuration(1000)
+        .atmosphereColor('#FF7A00')
+        .atmosphereAltitude(0.25)
+        .showAtmosphere(true)
+        (document.getElementById('globeViz'));
 
-        const popupContent = `
-            <div class="treasure-popup">
-                <h3>${treasure.name}</h3>
-                <button onclick="openTreasureLocation(${treasure.lat}, ${treasure.lng}, '${treasure.name}')">
-                    Start Hunt
-                </button>
-            </div>
-        `;
+    // Set initial position
+    globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 });
 
-        marker.bindPopup(popupContent);
-    });
-
-    // Auto rotation
-    let rotation = 0;
+    // Auto-rotation
+    let currentLng = 0;
     setInterval(() => {
-        rotation = (rotation + 0.5) % 360;
-        globe.setView([20, rotation - 180], globe.getZoom(), { 
-            animate: true,
-            duration: 0.1
+        currentLng = (currentLng + 0.5) % 360;
+        globe.pointOfView({
+            lat: 20,
+            lng: currentLng,
+            altitude: 2.5
         });
     }, 100);
 
-    // Add zoom control
-    L.control.zoom({
-        position: 'bottomright'
-    }).addTo(globe);
+    // Handle point clicks
+    globe.onPointClick(point => {
+        openTreasureLocation(point.lat, point.lng, point.name);
+    });
+
+    // Add glow effect for points
+    const glow = globe.pointsMaterial();
+    glow.emissive = new THREE.Color('#FF7A00');
+    glow.emissiveIntensity = 0.5;
 }
 
 function openTreasureLocation(lat, lng, name) {
