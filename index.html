@@ -6,8 +6,8 @@
     <title>Blockchain Treasures</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://unpkg.com/globe.gl@2.32.1/dist/globe.gl.min.js"></script>
-<script src="https://unpkg.com/d3@7"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
     <!-- Include Telegram WebApp 2.0 library -->
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
     <!-- Add Telegram WebApp 2.0 meta tags -->
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     WebApp.expand();
 
     // Initialize map
-    initializeGlobeMap();
+    initializeMap();
     
     // Navigation button click handler
     document.querySelectorAll('.pill-icon').forEach(icon => {
@@ -463,103 +463,129 @@ document.addEventListener('DOMContentLoaded', () => {
             event.stopPropagation();
             this.classList.toggle('menu-open');
         });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!socialFab.contains(event.target)) {
-                socialFab.classList.remove('menu-open');
-            }
-        });
     }
+
+    // Close social sharing menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const socialFab = document.querySelector('.social-fab');
+        if (socialFab && !socialFab.contains(event.target)) {
+            socialFab.classList.remove('menu-open');
+        }
+    });
 });
 
-function initializeGlobeMap() {
-    const mapPreview = document.querySelector('.map-preview');
-    mapPreview.innerHTML = '<div id="globeViz" style="width: 100%; height: 100%;"></div>';
+function initializeMap() {
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaXZhbmNvaW45OCIsImEiOiJjbTNyY3RkYWcwNHJxMmxzYnR6NXRqdXNkIn0.u2o-DhnCaqOkqkBa5qJOAQ'; // Replace with your token
 
-    const treasures = [
-        { lat: 40.7128, lng: -74.0060, name: "New York Treasure" },
-        { lat: 34.0522, lng: -118.2437, name: "LA Treasure" },
-        { lat: 51.5074, lng: -0.1278, name: "London Treasure" },
-        { lat: 35.6762, lng: 139.6503, name: "Tokyo Treasure" }
-    ];
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/navigation-night-v1',
+        center: [0, 20],
+        zoom: 2,
+        projection: 'globe',
+        bearing: 0,
+        pitch: 0
+    });
 
-    const globe = Globe({
-        rendererConfig: { antialias: false },
-        waitForGlobeReady: false
-    })
-        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-        .pointsData(treasures)
-        .pointLat('lat')
-        .pointLng('lng')
-        .pointColor(() => '#FF7A00')
-        .pointAltitude(0.07)
-        .pointRadius(0.4)
-        .atmosphereColor('#FF7A00')
-        .atmosphereAltitude(0.15)
-        .showAtmosphere(true)
-        .pointsMerge(true)
-        .enablePointerInteraction(true)
-        (document.getElementById('globeViz'));
+    // Add navigation controls
+    map.addControl(new mapboxgl.NavigationControl());
 
-    // Set initial position
-    globe.pointOfView({ lat: 20, lng: 0, altitude: 2.8 });
+    // Add atmosphere and fog effects
+    map.on('load', () => {
+        map.setFog({
+            'color': 'rgb(186, 210, 235)',
+            'high-color': 'rgb(36, 92, 223)',
+            'horizon-blend': 0.02
+        });
 
-    // Control variables for auto-rotation
-    let isAutoRotating = true;
-    let currentLng = 0;
-    let rotationInterval;
+        map.addLayer({
+            'id': 'atmosphere',
+            'type': 'sky',
+            'paint': {
+                'sky-type': 'atmosphere',
+                'sky-atmosphere-sun': [0.0, 90.0],
+                'sky-atmosphere-sun-intensity': 15
+            }
+        });
 
-    // Function to start auto-rotation
-    function startAutoRotation() {
-        if (!rotationInterval) {
-            rotationInterval = setInterval(() => {
-                if (isAutoRotating) {
-                    currentLng = (currentLng + 0.3) % 360;
-                    globe.pointOfView({
-                        lat: globe.pointOfView().lat,
-                        lng: currentLng,
-                        altitude: globe.pointOfView().altitude
-                    });
-                }
-            }, 150);
+        // Add your treasure markers
+        const treasures = [
+            { coordinates: [40.7128, -74.0060], name: "New York Treasure" },
+            { coordinates: [34.0522, -118.2437], name: "LA Treasure" },
+            { coordinates: [51.5074, -0.1278], name: "London Treasure" },
+            { coordinates: [35.6762, 139.6503], name: "Tokyo Treasure" }
+        ];
+
+        treasures.forEach(treasure => {
+            // Create custom marker element
+            const marker = document.createElement('div');
+            marker.className = 'treasure-marker';
+            marker.style.width = '20px';
+            marker.style.height = '20px';
+            marker.style.borderRadius = '50%';
+            marker.style.background = '#FF7A00';
+            marker.style.boxShadow = '0 0 15px rgba(255, 122, 0, 0.8)';
+            marker.style.animation = 'pulse 2s infinite';
+
+            new mapboxgl.Marker(marker)
+                .setLngLat(treasure.coordinates)
+                .setPopup(
+                    new mapboxgl.Popup({ offset: 25 })
+                        .setHTML(`
+                            <h3 style="color: #FF7A00; margin: 0;">${treasure.name}</h3>
+                            <button onclick="openTreasureLocation(${treasure.coordinates[0]}, ${treasure.coordinates[1]}, '${treasure.name}')" 
+                                    style="background: #FF7A00; color: white; border: none; padding: 5px 10px; margin-top: 5px; border-radius: 5px; cursor: pointer;">
+                                Start Hunt
+                            </button>
+                        `)
+                )
+                .addTo(map);
+        });
+    });
+
+    // Auto-rotation
+    let rotateCamera = true;
+    let bearing = 0;
+
+    function rotateGlobe() {
+        if (rotateCamera) {
+            bearing = (bearing + 0.3) % 360;
+            map.setCenter([bearing - 180, map.getCenter().lat]);
         }
+        requestAnimationFrame(rotateGlobe);
     }
 
-    // Start initial auto-rotation
-    startAutoRotation();
+    rotateGlobe();
 
-    // Handle user interactions
-    let isDragging = false;
-    
-    globe.controls().addEventListener('start', () => {
-        isDragging = true;
-        isAutoRotating = false;
-    });
+    // Stop rotation on interaction
+    map.on('mousedown', () => { rotateCamera = false; });
+    map.on('touchstart', () => { rotateCamera = false; });
 
-    globe.controls().addEventListener('end', () => {
-        isDragging = false;
-        // Resume auto-rotation after 2 seconds of no interaction
+    // Resume rotation after 5 seconds of no interaction
+    map.on('mouseup', () => {
         setTimeout(() => {
-            if (!isDragging) {
-                currentLng = globe.pointOfView().lng;
-                isAutoRotating = true;
-            }
-        }, 2000);
+            bearing = map.getBearing();
+            rotateCamera = true;
+        }, 5000);
     });
+    map.on('touchend', () => {
+        setTimeout(() => {
+            bearing = map.getBearing();
+            rotateCamera = true;
+        }, 5000);
+    });
+}
 
-    // Handle point clicks
-    globe.onPointClick(point => {
-        const WebApp = window.Telegram.WebApp;
-        if (WebApp.openMap) {
-            WebApp.openMap({
-                latitude: point.lat,
-                longitude: point.lng,
-                zoom: 15,
-                title: point.name
-            });
-        }
-    });
+function openTreasureLocation(lat, lng, name) {
+    const WebApp = window.Telegram.WebApp;
+    if (WebApp.openMap) {
+        WebApp.openMap({
+            latitude: lat,
+            longitude: lng,
+            zoom: 15,
+            title: name
+        });
+    }
 }
 </script>
 </body>
