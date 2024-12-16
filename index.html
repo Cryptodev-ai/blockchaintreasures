@@ -460,15 +460,14 @@ document.addEventListener('DOMContentLoaded', () => {
             event.stopPropagation();
             this.classList.toggle('menu-open');
         });
-    }
 
-    // Close social sharing menu when clicking outside
-    document.addEventListener('click', function(event) {
-        const socialFab = document.querySelector('.social-fab');
-        if (socialFab && !socialFab.contains(event.target)) {
-            socialFab.classList.remove('menu-open');
-        }
-    });
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!socialFab.contains(event.target)) {
+                socialFab.classList.remove('menu-open');
+            }
+        });
+    }
 });
 
 function initializeGlobeMap() {
@@ -482,57 +481,49 @@ function initializeGlobeMap() {
         { lat: 35.6762, lng: 139.6503, name: "Tokyo Treasure" }
     ];
 
-    const globe = Globe()
+    const globe = Globe({
+        rendererConfig: { antialias: false }, // Disable antialiasing for better performance
+        waitForGlobeReady: false // Don't wait for texture to load
+    })
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
         .pointsData(treasures)
         .pointLat('lat')
         .pointLng('lng')
         .pointColor(() => '#FF7A00')
-        .pointAltitude(0.1)
-        .pointRadius(0.5)
-        .pointsMerge(true)
-        .pointsTransitionDuration(1000)
+        .pointAltitude(0.07)
+        .pointRadius(0.4)
         .atmosphereColor('#FF7A00')
-        .atmosphereAltitude(0.25)
+        .atmosphereAltitude(0.15)
         .showAtmosphere(true)
+        .pointsMerge(true)
         (document.getElementById('globeViz'));
 
-    // Set initial position
-    globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 });
+    // Set initial position with higher altitude for better performance
+    globe.pointOfView({ lat: 20, lng: 0, altitude: 2.8 });
 
-    // Auto-rotation
+    // Slower rotation for better performance
     let currentLng = 0;
     setInterval(() => {
-        currentLng = (currentLng + 0.5) % 360;
+        currentLng = (currentLng + 0.3) % 360;
         globe.pointOfView({
             lat: 20,
             lng: currentLng,
-            altitude: 2.5
+            altitude: 2.8
         });
-    }, 100);
+    }, 150);
 
     // Handle point clicks
     globe.onPointClick(point => {
-        openTreasureLocation(point.lat, point.lng, point.name);
+        const WebApp = window.Telegram.WebApp;
+        if (WebApp.openMap) {
+            WebApp.openMap({
+                latitude: point.lat,
+                longitude: point.lng,
+                zoom: 15,
+                title: point.name
+            });
+        }
     });
-
-    // Add glow effect for points
-    const glow = globe.pointsMaterial();
-    glow.emissive = new THREE.Color('#FF7A00');
-    glow.emissiveIntensity = 0.5;
-}
-
-function openTreasureLocation(lat, lng, name) {
-    const WebApp = window.Telegram.WebApp;
-    if (WebApp.openMap) {
-        WebApp.openMap({
-            latitude: lat,
-            longitude: lng,
-            zoom: 15,
-            title: name
-        });
-    }
 }
 </script>
 </body>
