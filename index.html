@@ -7,6 +7,10 @@
     <title>Blockchain Treasures</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/three@0.137.0/build/three.min.js"></script>
+<script src="https://unpkg.com/@elfalem/leaflet-3d@0.4.0/dist/leaflet.3d.js"></script>
     <!-- Include Telegram WebApp 2.0 library -->
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
     <!-- Add Telegram WebApp 2.0 meta tags -->
@@ -16,229 +20,288 @@
     <meta name="telegram:app_title" content="Blockchain Treasures">
     <meta name="telegram:app_short_name" content="blockchaintreasures">
     <style>
-        :root {
-            --app-bg: #001233;
-            --nav-bg: rgba(0, 18, 51, 0.3);
-            --neon-orange: #FF7A00;
-            --text-primary: #ffffff;
-        }
+:root {
+    --app-bg: #001233;
+    --nav-bg: rgba(0, 18, 51, 0.3);
+    --neon-orange: #FF7A00;
+    --text-primary: #ffffff;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-        body {
-            background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
-            color: var(--text-primary);
-            font-family: 'Space Grotesk', sans-serif;
-            min-height: 100vh;
-            overflow: hidden;
-        }
+body {
+    background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
+    color: var(--text-primary);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+}
 
-        .cyber-snake {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
+.cyber-snake {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+}
 
-        .app-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            gap: 20px;
-            position: relative;
-            z-index: 1;
-        }
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--neon-orange);
-            text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
-        }
+.logo h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--neon-orange);
+    text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
+}
 
-        .logo span {
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+.logo span {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
 
-        .pill-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 18, 51, 0.9);
-            padding: 10px;
-            border-radius: 30px;
-            display: flex;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 122, 0, 0.2);
-            z-index: 10;
-        }
+.pill-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 18, 51, 0.9);
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    gap: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 122, 0, 0.2);
+    z-index: 10;
+}
 
-        .pill-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.pill-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .pill-icon i {
-            color: white;
-            font-size: 18px;
-        }
+.pill-icon i {
+    color: white;
+    font-size: 18px;
+}
 
-        .pill-icon.active {
-            background: var(--neon-orange);
-            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-        }
+.pill-icon.active {
+    background: var(--neon-orange);
+    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+}
 
-        .pill-icon.active i {
-            color: var(--app-bg);
-        }
+.pill-icon.active i {
+    color: var(--app-bg);
+}
 
-        .section {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-        }
+.section {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+}
 
-        .section.active {
-            display: flex;
-        }
+.section.active {
+    display: flex;
+}
 
-        .map-description {
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.6;
-            padding: 15px 0;
-        }
+.map-description {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 15px 0;
+}
 
-        .map-container {
+.map-container {
     flex: 1;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
-    cursor: pointer;
+    cursor: grab;
     background: var(--nav-bg);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 122, 0, 0.2);
-    min-height: 300px; /* Add this to ensure minimum height */
+    min-height: 400px;
 }
 
-        .map-preview {
+.map-preview {
     width: 100%;
     height: 100%;
     position: relative;
-    min-height: inherit; /* Add this to inherit minimum height */
+    min-height: inherit;
 }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
-        }
+.custom-marker {
+    width: 20px;
+    height: 20px;
+    background: var(--neon-orange);
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 15px rgba(255, 122, 0, 0.8);
+    animation: pulse 2s infinite;
+}
 
-        .coming-soon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
+.custom-marker::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,122,0,0.4) 0%, rgba(255,122,0,0) 70%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
 
-        .coming-soon h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--neon-orange);
-            text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-        }
+.leaflet-popup-content-wrapper {
+    background: rgba(0, 18, 51, 0.95);
+    color: white;
+    border: 1px solid rgba(255, 122, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
 
-        .social-fab {
-            position: fixed;
-            bottom: 22px;
-            right: 15px;
-            width: 50px;
-            height: 50px;
-            background: var(--neon-orange);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
+.leaflet-popup-tip {
+    background: rgba(0, 18, 51, 0.95);
+    border: 1px solid rgba(255, 122, 0, 0.3);
+}
 
-        .social-menu {
-            position: absolute;
-            bottom: 60px;
-            right: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
+.treasure-popup {
+    text-align: center;
+    padding: 10px;
+}
 
-        .social-fab.menu-open .social-menu {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
+.treasure-popup h3 {
+    color: var(--neon-orange);
+    margin: 0 0 10px 0;
+}
 
-        .social-item {
-            width: 35px;
-            height: 35px;
-            background: rgba(10, 10, 10, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--neon-orange);
-            transition: all 0.3s ease;
-        }
+.treasure-popup button {
+    background: var(--neon-orange);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .social-item:hover {
-            transform: scale(1.1);
-            background: var(--neon-orange);
-            color: var(--dark-bg);
-        }
+.treasure-popup button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 122, 0, 0.4);
+}
 
-        .privacy-link {
-            text-align: center;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 12px;
-            opacity: 0.7;
-            padding: 10px 0;
-        }
-    </style>
+.coming-soon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.coming-soon h2 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--neon-orange);
+    text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+}
+
+.social-fab {
+    position: fixed;
+    bottom: 22px;
+    right: 15px;
+    width: 50px;
+    height: 50px;
+    background: var(--neon-orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.social-menu {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.social-fab.menu-open .social-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.social-item {
+    width: 35px;
+    height: 35px;
+    background: rgba(10, 10, 10, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neon-orange);
+    transition: all 0.3s ease;
+}
+
+.social-item:hover {
+    transform: scale(1.1);
+    background: var(--neon-orange);
+    color: var(--dark-bg);
+}
+
+.privacy-link {
+    text-align: center;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 12px;
+    opacity: 0.7;
+    padding: 10px 0;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
+}
+</style>
 </head>
 <body>
     <!-- Cyberpunk Snake Background -->
@@ -380,27 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
     WebApp.expand();
 
     // Initialize map
-    const mapContainer = document.querySelector('.map-preview');
-    if (mapContainer) {
-        // Clear existing content
-        mapContainer.innerHTML = '';
-        
-        // Show embedded map
-        WebApp.showMap({
-            coordinates: [40.7128, -74.0060],
-            zoom: 12,
-            title: "Treasure Location",
-            can_send: true,
-            container: mapContainer
-        });
-    }
-
-    // Initialize UI handlers
-    initializeUIHandlers();
-});
-
-// Initialize all UI handlers
-function initializeUIHandlers() {
+    initializeGlobeMap();
+    
     // Navigation button click handler
     document.querySelectorAll('.pill-icon').forEach(icon => {
         icon.addEventListener('click', function() {
@@ -428,6 +472,75 @@ function initializeUIHandlers() {
             socialFab.classList.remove('menu-open');
         }
     });
+});
+
+function initializeGlobeMap() {
+    const mapPreview = document.querySelector('.map-preview');
+    mapPreview.innerHTML = '<div id="globe" style="width: 100%; height: 100%;"></div>';
+
+    const map = L.map('globe', {
+        worldCopyJump: false,
+        zoomControl: false,
+        minZoom: 3,
+        maxZoom: 8
+    }).setView([20, 0], 3);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const earthLayer = L.earth3d({
+        texture: 'https://unpkg.com/@elfalem/leaflet-3d@0.4.0/examples/texture/2_no_clouds_4k.jpg',
+        sphere: true,
+        dragRotate: true
+    });
+    map.addLayer(earthLayer);
+
+    const treasures = [
+        { lat: 40.7128, lng: -74.0060, name: "New York Treasure" },
+        { lat: 34.0522, lng: -118.2437, name: "LA Treasure" },
+        { lat: 51.5074, lng: -0.1278, name: "London Treasure" },
+        { lat: 35.6762, lng: 139.6503, name: "Tokyo Treasure" }
+    ];
+
+    treasures.forEach(treasure => {
+        const marker = L.marker([treasure.lat, treasure.lng], {
+            icon: L.divIcon({
+                className: 'custom-marker',
+                html: '',
+                iconSize: [20, 20]
+            })
+        }).addTo(map);
+
+        const popupContent = `
+            <div class="treasure-popup">
+                <h3>${treasure.name}</h3>
+                <button onclick="openTreasureLocation(${treasure.lat}, ${treasure.lng}, '${treasure.name}')">
+                    Start Hunt
+                </button>
+            </div>
+        `;
+
+        marker.bindPopup(popupContent);
+    });
+
+    let rotation = 0;
+    setInterval(() => {
+        rotation += 0.5;
+        map.setView([20, rotation], 3, { animate: false });
+    }, 100);
+}
+
+function openTreasureLocation(lat, lng, name) {
+    const WebApp = window.Telegram.WebApp;
+    if (WebApp.openMap) {
+        WebApp.openMap({
+            latitude: lat,
+            longitude: lng,
+            zoom: 15,
+            title: name
+        });
+    }
 }
 </script>
 </body>
