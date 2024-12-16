@@ -439,53 +439,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Map click handler function
 function openTelegramMap() {
-    console.log('Map Container Clicked');
-
-    // Check Telegram WebApp availability
     if (window.Telegram && window.Telegram.WebApp) {
         const WebApp = window.Telegram.WebApp;
         
-        try {
-            // Use WebApp.showPopup for older versions
-            WebApp.showPopup({
-                title: 'Treasure Location',
-                message: 'Would you like to view the treasure location?',
-                buttons: [
-                    {
-                        id: "view",
-                        type: "default",
-                        text: "View Location"
-                    },
-                    {
-                        id: "cancel",
-                        type: "cancel",
-                        text: "Cancel"
-                    }
-                ]
-            }, function(buttonId) {
-                if (buttonId === "view") {
-                    // Use regular link as fallback
-                    const latitude = 40.7128;
-                    const longitude = -74.0060;
-                    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-                    
-                    if (WebApp.openLink) {
-                        WebApp.openLink(url);
-                    } else {
-                        window.open(url, '_blank');
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            // Ultimate fallback
-            const latitude = 40.7128;
-            const longitude = -74.0060;
-            window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, '_blank');
+        if (WebApp.platform === 'tdesktop') {
+            // Desktop version
+            WebApp.openTelegramLink('https://t.me/share/map?ll=40.7128,-74.0060');
+        } else {
+            // Mobile version
+            WebApp.openLink('https://t.me/share/map?ll=40.7128,-74.0060');
         }
-    } else {
-        console.error('Telegram WebApp not available');
-        alert('Please open this page in Telegram');
     }
 }
 </script>
