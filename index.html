@@ -9,180 +9,179 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-    --app-bg: #001233;
-    --nav-bg: rgba(0, 18, 51, 0.3);
-    --neon-orange: #FF7A00;
-    --text-primary: #ffffff;
-}
+            --app-bg: #001233;
+            --nav-bg: rgba(0, 18, 51, 0.3);
+            --neon-orange: #FF7A00;
+            --text-primary: #ffffff;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-body {
-    background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
-    color: var(--text-primary);
-    font-family: 'Space Grotesk', sans-serif;
-    min-height: 100vh;
-    overflow: hidden;
-}
+        body {
+            background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
-.cyber-snake {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 0;
-}
+        .cyber-snake {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-.app-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    gap: 20px;
-    position: relative;
-    z-index: 1;
-}
+        .app-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
 
-.logo {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-.logo h1 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: var(--neon-orange);
-    text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
-}
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--neon-orange);
+            text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
+        }
 
-.logo span {
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.8;
-}
+        .logo span {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
 
-.pill-nav {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 18, 51, 0.9);
-    padding: 10px;
-    border-radius: 30px;
-    display: flex;
-    gap: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 122, 0, 0.2);
-    z-index: 10;
-}
-
-.pill-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.pill-icon i {
-    color: white;
-    font-size: 18px;
-}
-
-.pill-icon.active {
-    background: var(--neon-orange);
-    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-}
-
-.pill-icon.active i {
-    color: var(--app-bg);
-}
-
-.section {
-    display: none;
-    flex: 1;
-    flex-direction: column;
-}
-
-.section.active {
-    display: flex;
-}
-
-.map-description {
-    text-align: center;
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 15px 0;
-}
-
-.map-container {
-    flex: 1;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    background: var(--nav-bg);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 122, 0, 0.2);
-}
-
-.map-preview {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.treasure-marker {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: var(--neon-orange);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
-    70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
-}
-
-.coming-soon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
-
-.coming-soon h2 {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--neon-orange);
-    text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-}
-
-/* Updated Social Menu Styles */
-.social-fab {
+        .pill-nav {
             position: fixed;
             bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 18, 51, 0.9);
+            padding: 10px;
+            border-radius: 30px;
+            display: flex;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 122, 0, 0.2);
+            z-index: 10;
+        }
+
+        .pill-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pill-icon i {
+            color: white;
+            font-size: 18px;
+        }
+
+        .pill-icon.active {
+            background: var(--neon-orange);
+            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+        }
+
+        .pill-icon.active i {
+            color: var(--app-bg);
+        }
+
+        .section {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .section.active {
+            display: flex;
+        }
+
+        .map-description {
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 15px 0;
+        }
+
+        .map-container {
+            flex: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 122, 0, 0.2);
+        }
+
+        .map-preview {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .treasure-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--neon-orange);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
+        }
+
+        .coming-soon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .coming-soon h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--neon-orange);
+            text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+        }
+
+        .social-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
             background: var(--neon-orange);
             border-radius: 50%;
             display: flex;
@@ -191,11 +190,12 @@ body {
             cursor: pointer;
             box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
             z-index: 100;
+            transition: all 0.3s ease;
         }
 
         .social-menu {
             position: absolute;
-            bottom: 70px;
+            bottom: 60px;
             right: 0;
             display: flex;
             flex-direction: column;
@@ -206,15 +206,15 @@ body {
             pointer-events: none;
         }
 
-        .social-fab:hover .social-menu {
+        .social-fab.menu-open .social-menu {
             opacity: 1;
             transform: translateY(0);
             pointer-events: all;
         }
 
         .social-item {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: rgba(10, 10, 10, 0.9);
             border-radius: 50%;
             display: flex;
@@ -230,14 +230,14 @@ body {
             color: var(--dark-bg);
         }
 
-.privacy-link {
-    text-align: center;
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 12px;
-    opacity: 0.7;
-    padding: 10px 0;
-}
+        .privacy-link {
+            text-align: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 12px;
+            opacity: 0.7;
+            padding: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -245,9 +245,9 @@ body {
     <svg class="cyber-snake" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
         <defs>
             <linearGradient id="snake-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-    <stop offset="0%" style="stop-color:#FF7A00;stop-opacity:1" />
-    <stop offset="100%" style="stop-color:#FFB700;stop-opacity:1" />
-</linearGradient>
+                <stop offset="0%" style="stop-color:#FF7A00;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#FFB700;stop-opacity:1" />
+            </linearGradient>
             
             <filter id="glow">
                 <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -360,21 +360,23 @@ body {
         </section>
 
         <div class="social-fab">
-        <i class="fas fa-share-alt"></i>
-        <div class="social-menu">
-            <div class="social-item"><i class="fab fa-twitter"></i></div>
-            <div class="social-item"><i class="fab fa-facebook-f"></i></div>
-            <div class="social-item"><i class="fab fa-instagram"></i></div>
-            <div class="social-item"><i class="fab fa-tiktok"></i></div>
-            <div class="social-item"><i class="fab fa-telegram"></i></div>
+            <i class="fas fa-share-alt"></i>
+            <div class="social-menu">
+                <div class="social-item"><i class="fab fa-twitter"></i></div>
+                <div class="social-item"><i class="fab fa-facebook-f"></i></div>
+                <div class="social-item"><i class="fab fa-instagram"></i></div>
+                <div class="social-item"><i class="fab fa-tiktok"></i></div>
+                <div class="social-item"><i class="fab fa-telegram"></i></div>
+            </div>
         </div>
-    </div>
 
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
-<script>
+
+    <script>
     // Ensure Telegram WebApp is initialized
     document.addEventListener('DOMContentLoaded', () => {
+        // Check Telegram WebApp availability
         if (window.Telegram && window.Telegram.WebApp) {
             const WebApp = window.Telegram.WebApp;
             
@@ -382,76 +384,85 @@ body {
             WebApp.ready();
             WebApp.expand();
 
-            // Map container click handler
-            document.querySelector('.map-container').addEventListener('click', () => {
-                // Check if geolocation is supported
-                if (WebApp.isVersionAtLeast('6.1')) {
-                    // Attempt to request location
-                    WebApp.requestLocation(location => {
-                        if (location) {
-                            // Successfully got location
-                            console.log('Latitude:', location.latitude);
-                            console.log('Longitude:', location.longitude);
+            // Logging WebApp version for debugging
+            console.log('Telegram WebApp Version:', WebApp.version);
 
-                            // Open map with precise location
-                            WebApp.openLink(`https://maps.google.com/maps?q=${location.latitude},${location.longitude}`, {
-                                try_instant_view: true
+            // Map container click handler with comprehensive error handling
+            const mapContainer = document.querySelector('.map-container');
+            if (mapContainer) {
+                mapContainer.addEventListener('click', () => {
+                    try {
+                        // Check if location is supported
+                        if (WebApp.isVersionAtLeast('6.1')) {
+                            // Attempt to get location
+                            WebApp.requestLocation(location => {
+                                if (location && location.latitude && location.longitude) {
+                                    // Successfully got location
+                                    console.log('Location obtained:', location);
+
+                                    // Open map with precise location
+                                    WebApp.openLink(`https://maps.google.com/maps?q=${location.latitude},${location.longitude}`, {
+                                        try_instant_view: true
+                                    });
+
+                                    // Optional: Send location data
+                                    WebApp.sendData(JSON.stringify({
+                                        type: 'location',
+                                        latitude: location.latitude,
+                                        longitude: location.longitude
+                                    }));
+                                } else {
+                                    WebApp.showAlert('Unable to retrieve location. Please check your device settings.');
+                                }
                             });
-
-                            // Optional: Send location back to your backend
-                            WebApp.sendData(JSON.stringify({
-                                type: 'location',
-                                latitude: location.latitude,
-                                longitude: location.longitude
-                            }));
+                        } else {
+                            // Fallback for older versions
+                            WebApp.showAlert('Location services are not supported in your Telegram version.');
                         }
-                    });
-                } else {
-                    // Fallback for older WebApp versions
-                    WebApp.showAlert('Location services are not supported in your Telegram version.');
+                    } catch (error) {
+                        console.error('Location request error:', error);
+                        WebApp.showAlert('An error occurred while trying to get your location.');
+                    }
+                });
+            }
+
+            // Navigation functionality
+            document.querySelectorAll('.pill-icon').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(this.dataset.section).classList.add('active');
+                });
+            });
+
+            // Social menu toggle
+            const socialFab = document.querySelector('.social-fab');
+            if (socialFab) {
+                socialFab.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent event from propagating
+                    this.classList.toggle('menu-open');
+                });
+            }
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const socialFab = document.querySelector('.social-fab');
+                if (socialFab && !socialFab.contains(event.target)) {
+                    socialFab.classList.remove('menu-open');
                 }
             });
 
             // Additional WebApp event listeners
-            WebApp.onEvent('mainButtonClicked', () => {
-                console.log('Main button clicked');
-            });
-
             WebApp.onEvent('viewportChanged', () => {
-                // Adjust layout for different device viewport sizes
                 document.documentElement.style.setProperty('--tg-viewport-height', 
                     `${WebApp.viewportHeight}px`);
-            });
-
-            // Optional: Close confirmation
-            WebApp.onEvent('beforeClose', (event) => {
-                event.preventDefault(); // Prevent immediate closing
-                WebApp.showConfirm('Are you sure you want to close the app?', (confirmed) => {
-                    if (confirmed) {
-                        WebApp.close();
-                    }
-                });
             });
         } else {
             console.error('Telegram WebApp is not available');
         }
     });
-
-    // Navigation functionality
-    document.querySelectorAll('.pill-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
-            document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(this.dataset.section).classList.add('active');
-        });
-    });
-
-    // Social menu toggle
-    document.querySelector('.social-fab').addEventListener('click', function() {
-        this.querySelector('.social-menu').classList.toggle('active');
-    });
-</script>
+    </script>
 </body>
 </html>
