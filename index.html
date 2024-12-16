@@ -53,8 +53,8 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    gap: 20px;
+    padding: 10px; /* Reduced from 20px */
+    gap: 10px; /* Reduced from 20px */
     position: relative;
     z-index: 1;
 }
@@ -80,23 +80,25 @@ body {
 }
 
 .pill-nav {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static; /* Changed from fixed */
+    bottom: auto;
+    left: auto;
+    transform: none;
     background: rgba(0, 18, 51, 0.9);
-    padding: 10px;
-    border-radius: 30px;
+    padding: 8px; /* Reduced padding */
+    border-radius: 20px;
     display: flex;
-    gap: 20px;
+    gap: 12px; /* Reduced gap */
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 122, 0, 0.2);
     z-index: 10;
+    width: fit-content;
+    margin: 0 auto; /* Center horizontally */
 }
 
 .pill-icon {
-    width: 40px;
-    height: 40px;
+    width: 32px; /* Reduced from 40px */
+    height: 32px; /* Reduced from 40px */
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
@@ -107,8 +109,7 @@ body {
 }
 
 .pill-icon i {
-    color: white;
-    font-size: 18px;
+    font-size: 14px; /* Reduced from 18px */
 }
 
 .pill-icon.active {
@@ -130,15 +131,8 @@ body {
     display: flex;
 }
 
-.map-description {
-    text-align: center;
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 15px 0;
-}
-
 .map-container {
-    flex: 0 1 auto; /* Changed from flex: 1 */
+    flex: 0 1 auto;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
@@ -146,9 +140,10 @@ body {
     background: var(--nav-bg);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 122, 0, 0.2);
-    height: 60vh; /* Using viewport height instead of fixed height */
-    max-height: 400px; /* Adding maximum height */
-    margin: 0 auto; /* Center the container */
+    height: 50vh;
+    max-height: 400px;
+    width: 95%; /* Added width control */
+    margin: 0 auto;
 }
 
 .map-preview {
@@ -157,6 +152,15 @@ body {
     position: relative;
 }
 
+/* Adjusted description spacing */
+.map-description {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 10px 0;
+    margin: 0 auto;
+    max-width: 95%; /* Ensure text doesn't overflow */
+}
 .custom-marker {
     width: 20px;
     height: 20px;
@@ -378,8 +382,7 @@ body {
             <h1>Blockchain</h1>
             <span>TREASURES</span>
         </div>
-
-        <nav class="pill-nav">
+ <nav class="pill-nav">
             <div class="pill-icon active" data-section="treasures">
                 <i class="fas fa-store"></i>
             </div>
@@ -390,7 +393,6 @@ body {
                 <i class="fas fa-cube"></i>
             </div>
         </nav>
-
         <section id="treasures" class="section active">
             <div class="map-description">
                 Choose your next Treasure to hunt<br>
