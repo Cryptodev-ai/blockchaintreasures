@@ -373,48 +373,85 @@ body {
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
 <script>
-       // Initialize Telegram WebApp
-       if (window.Telegram && window.Telegram.WebApp) {
-           window.Telegram.WebApp.ready();
-           window.Telegram.WebApp.expand();
-       }
+    // Ensure Telegram WebApp is initialized
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const WebApp = window.Telegram.WebApp;
+            
+            // Initialize WebApp
+            WebApp.ready();
+            WebApp.expand();
 
-       // Navigation functionality
-       document.querySelectorAll('.pill-icon').forEach(icon => {
-           icon.addEventListener('click', function() {
-               document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
-               this.classList.add('active');
+            // Map container click handler
+            document.querySelector('.map-container').addEventListener('click', () => {
+                // Check if geolocation is supported
+                if (WebApp.isVersionAtLeast('6.1')) {
+                    // Attempt to request location
+                    WebApp.requestLocation(location => {
+                        if (location) {
+                            // Successfully got location
+                            console.log('Latitude:', location.latitude);
+                            console.log('Longitude:', location.longitude);
 
-               document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-               document.getElementById(this.dataset.section).classList.add('active');
-           });
-       });
+                            // Open map with precise location
+                            WebApp.openLink(`https://maps.google.com/maps?q=${location.latitude},${location.longitude}`, {
+                                try_instant_view: true
+                            });
 
-       // Social menu toggle
-       document.querySelector('.social-main').addEventListener('click', function() {
-           document.querySelector('.social-menu').classList.toggle('active');
-       });
+                            // Optional: Send location back to your backend
+                            WebApp.sendData(JSON.stringify({
+                                type: 'location',
+                                latitude: location.latitude,
+                                longitude: location.longitude
+                            }));
+                        }
+                    });
+                } else {
+                    // Fallback for older WebApp versions
+                    WebApp.showAlert('Location services are not supported in your Telegram version.');
+                }
+            });
 
-       // Map functionality
-       function openTelegramMap() {
-           if (window.Telegram && window.Telegram.WebApp) {
-               try {
-                   window.Telegram.WebApp.requestLocation(function(location) {
-                       window.Telegram.WebApp.showLocation(location.latitude, location.longitude);
-                   });
-               } catch (e) {
-                   console.error('Error opening map:', e);
-               }
-           }
-       }
+            // Additional WebApp event listeners
+            WebApp.onEvent('mainButtonClicked', () => {
+                console.log('Main button clicked');
+            });
 
-       // Handle viewport changes
-       if (window.Telegram.WebApp) {
-           window.Telegram.WebApp.onEvent('viewportChanged', function() {
-               document.documentElement.style.setProperty('--tg-viewport-height', 
-                   `${window.Telegram.WebApp.viewportHeight}px`);
-           });
-       }
-   </script>
+            WebApp.onEvent('viewportChanged', () => {
+                // Adjust layout for different device viewport sizes
+                document.documentElement.style.setProperty('--tg-viewport-height', 
+                    `${WebApp.viewportHeight}px`);
+            });
+
+            // Optional: Close confirmation
+            WebApp.onEvent('beforeClose', (event) => {
+                event.preventDefault(); // Prevent immediate closing
+                WebApp.showConfirm('Are you sure you want to close the app?', (confirmed) => {
+                    if (confirmed) {
+                        WebApp.close();
+                    }
+                });
+            });
+        } else {
+            console.error('Telegram WebApp is not available');
+        }
+    });
+
+    // Navigation functionality
+    document.querySelectorAll('.pill-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(this.dataset.section).classList.add('active');
+        });
+    });
+
+    // Social menu toggle
+    document.querySelector('.social-fab').addEventListener('click', function() {
+        this.querySelector('.social-menu').classList.toggle('active');
+    });
+</script>
 </body>
 </html>
