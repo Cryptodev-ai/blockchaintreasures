@@ -373,82 +373,96 @@
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
 
-   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Check Telegram WebApp availability
-        if (window.Telegram && window.Telegram.WebApp) {
-            const WebApp = window.Telegram.WebApp;
-            
-            // Initialize WebApp
-            WebApp.ready();
-            WebApp.expand();
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Check Telegram WebApp availability
+    if (window.Telegram && window.Telegram.WebApp) {
+        const WebApp = window.Telegram.WebApp;
+        
+        // Initialize WebApp
+        WebApp.ready();
+        WebApp.expand();
 
-            // Extensive logging
-            console.log('Telegram WebApp Details:');
-            console.log('Version:', WebApp.version);
-            console.log('Platform:', WebApp.platform);
-            console.log('Available Methods:', Object.keys(WebApp));
+        // Extensive logging
+        console.log('Telegram WebApp Details:');
+        console.log('Version:', WebApp.version);
+        console.log('Platform:', WebApp.platform);
+        console.log('Available Methods:', Object.keys(WebApp));
 
-            // Map container click handler
-            const mapContainer = document.querySelector('.map-container');
-            if (mapContainer) {
-                mapContainer.addEventListener('click', () => {
-                    console.log('Map Container Clicked');
-
-                    // Check for location methods
-                    if (typeof WebApp.requestLocation === 'function') {
-                        console.log('Attempting requestLocation');
-                        WebApp.requestLocation((location) => {
-                            if (location) {
-                                console.log('Location received:', location);
-                                WebApp.showAlert(`Location: ${location.latitude}, ${location.longitude}`);
-                            } else {
-                                console.warn('Location object is empty');
-                                WebApp.showAlert('No location data received');
-                            }
-                        });
-                    } else if (typeof WebApp.openLink === 'function') {
-                        console.warn('requestLocation not available, falling back to openLink');
-                        WebApp.openLink('https://maps.google.com/maps', {
-                            try_instant_view: true
-                        });
-                    } else {
-                        console.error('No location or link methods available');
-                        alert('Location services not supported');
-                    }
-                });
-            } else {
-                console.error('Map container not found');
-            }
+        // Map container click handler
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.addEventListener('click', openTelegramMap);
         } else {
-            console.error('Telegram WebApp not available');
+            console.error('Map container not found');
         }
-document.querySelectorAll('.pill-icon').forEach(icon => {
-                icon.addEventListener('click', function() {
-                    document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
+    } else {
+        console.error('Telegram WebApp not available');
+    }
 
-                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    document.getElementById(this.dataset.section).classList.add('active');
-                });
-            });
+    // Navigation button click handler
+    document.querySelectorAll('.pill-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
 
-            const socialFab = document.querySelector('.social-fab');
-            if (socialFab) {
-                socialFab.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    this.classList.toggle('menu-open');
-                });
-            }
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(this.dataset.section).classList.add('active');
+        });
+    });
 
-            document.addEventListener('click', function(event) {
-                const socialFab = document.querySelector('.social-fab');
-                if (socialFab && !socialFab.contains(event.target)) {
-                    socialFab.classList.remove('menu-open');
-                }
-            });
+    // Social sharing menu click handler
+    const socialFab = document.querySelector('.social-fab');
+    if (socialFab) {
+        socialFab.addEventListener('click', function(event) {
+            event.stopPropagation();
+            this.classList.toggle('menu-open');
+        });
+    }
+
+    // Close social sharing menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const socialFab = document.querySelector('.social-fab');
+        if (socialFab && !socialFab.contains(event.target)) {
+            socialFab.classList.remove('menu-open');
         }
     });
+});
+
+// Map click handler function
+function openTelegramMap() {
+    console.log('Map Container Clicked');
+
+    // Check Telegram WebApp availability
+    if (window.Telegram && window.Telegram.WebApp) {
+        const WebApp = window.Telegram.WebApp;
+
+        // Check for location methods
+        if (typeof WebApp.requestLocation === 'function') {
+            console.log('Attempting requestLocation');
+            WebApp.requestLocation((location) => {
+                if (location) {
+                    console.log('Location received:', location);
+                    WebApp.showAlert(`Location: ${location.latitude}, ${location.longitude}`);
+                } else {
+                    console.warn('Location object is empty');
+                    WebApp.showAlert('No location data received');
+                }
+            });
+        } else if (typeof WebApp.openLink === 'function') {
+            console.warn('requestLocation not available, falling back to openLink');
+            WebApp.openLink('https://maps.google.com/maps', {
+                try_instant_view: true
+            });
+        } else {
+            console.error('No location or link methods available');
+            alert('Location services not supported');
+        }
+    } else {
+        console.error('Telegram WebApp not available');
+        alert('Telegram WebApp not available');
+    }
+}
 </script>
 </body>
 </html>
