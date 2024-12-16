@@ -9,248 +9,267 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --app-bg: #001233;
-            --nav-bg: rgba(0, 18, 51, 0.3);
-            --neon-orange: #FF7A00;
-            --text-primary: #ffffff;
-        }
+    --app-bg: #001233;
+    --nav-bg: rgba(0, 18, 51, 0.3);
+    --neon-orange: #FF7A00;
+    --text-primary: #ffffff;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-        body {
-            background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
-            color: var(--text-primary);
-            font-family: 'Space Grotesk', sans-serif;
-            min-height: 100vh;
-            overflow: hidden;
-        }
+body {
+    background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
+    color: var(--text-primary);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+}
 
-        .cyber-snake {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
+.cyber-snake {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+}
 
-        .app-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            gap: 20px;
-            position: relative;
-            z-index: 1;
-        }
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--neon-orange);
-            text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
-        }
+.logo h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--neon-orange);
+    text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
+}
 
-        .logo span {
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+.logo span {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
 
-        .pill-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 18, 51, 0.9);
-            padding: 10px;
-            border-radius: 30px;
-            display: flex;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 122, 0, 0.2);
-            z-index: 10;
-        }
+.pill-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 18, 51, 0.9);
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    gap: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 122, 0, 0.2);
+    z-index: 10;
+}
 
-        .pill-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.pill-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .pill-icon i {
-            color: white;
-            font-size: 18px;
-        }
+.pill-icon i {
+    color: white;
+    font-size: 18px;
+}
 
-        .pill-icon.active {
-            background: var(--neon-orange);
-            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-        }
+.pill-icon.active {
+    background: var(--neon-orange);
+    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+}
 
-        .pill-icon.active i {
-            color: var(--app-bg);
-        }
+.pill-icon.active i {
+    color: var(--app-bg);
+}
 
-        .section {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-        }
+.section {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+}
 
-        .section.active {
-            display: flex;
-        }
+.section.active {
+    display: flex;
+}
 
-        .map-description {
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.6;
-            padding: 15px 0;
-        }
+.map-description {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 15px 0;
+}
 
-        .map-container {
-            flex: 1;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            background: var(--nav-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 122, 0, 0.2);
-        }
+.map-container {
+    flex: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 122, 0, 0.2);
+}
 
-        .map-preview {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+.map-preview {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
 
-        .treasure-marker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--neon-orange);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-        }
+.treasure-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--neon-orange);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s infinite;
+}
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
-        }
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
+}
 
-        .coming-soon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
+.coming-soon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
 
-        .coming-soon h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--neon-orange);
-            text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-        }
+.coming-soon h2 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--neon-orange);
+    text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+}
 
-        .social-menu {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            z-index: 100;
-        }
+/* Updated Social Menu Styles */
+.social-menu {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 100;
+}
 
-        .social-main {
-            width: 50px;
-            height: 50px;
-            background: var(--neon-orange);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-            position: relative;
-            z-index: 2;
-            transition: transform 0.3s ease;
-        }
+.social-main {
+    width: 50px;
+    height: 50px;
+    background: var(--neon-orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
 
-        .social-main i {
-            color: var(--app-bg);
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
+.social-main i {
+    color: var(--app-bg);
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
 
-        .social-items {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            bottom: -50px;
-            right: -50px;
-            transform: scale(0);
-            transform-origin: 75px 75px;
-            transition: transform 0.3s ease;
-        }
+.social-menu.active .social-main i {
+    transform: rotate(45deg);
+}
 
-        .social-menu.active .social-items {
-            transform: scale(1);
-        }
+.social-items {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
 
-        .social-menu.active .social-main i {
-            transform: rotate(45deg);
-        }
+.social-menu.active .social-items {
+    opacity: 1;
+    visibility: visible;
+}
 
-        .social-item {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 18, 51, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--neon-orange);
-            transform-origin: 75px 75px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
+.social-item {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 18, 51, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neon-orange);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: scale(0);
+}
 
-        .social-item:hover {
-            background: var(--neon-orange);
-            color: var(--app-bg);
-        }
+.social-menu.active .social-item {
+    opacity: 1;
+    transform: scale(1);
+}
 
-        .privacy-link {
-            text-align: center;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 12px;
-            opacity: 0.7;
-            padding: 10px 0;
-        }
+.social-item:nth-child(1) { transition-delay: 0s; }
+.social-item:nth-child(2) { transition-delay: 0.1s; }
+.social-item:nth-child(3) { transition-delay: 0.2s; }
+.social-item:nth-child(4) { transition-delay: 0.3s; }
+.social-item:nth-child(5) { transition-delay: 0.4s; }
+
+.social-menu.active .social-item:nth-child(1) { transform: translate(-60px, -60px); }
+.social-menu.active .social-item:nth-child(2) { transform: translate(-80px, 0); }
+.social-menu.active .social-item:nth-child(3) { transform: translate(-60px, 60px); }
+.social-menu.active .social-item:nth-child(4) { transform: translate(0, 80px); }
+.social-menu.active .social-item:nth-child(5) { transform: translate(60px, 60px); }
+
+.social-item:hover {
+    background: var(--neon-orange);
+    color: var(--app-bg);
+    transform: scale(1.1);
+}
+
+.privacy-link {
+    text-align: center;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 12px;
+    opacity: 0.7;
+    padding: 10px 0;
+}
     </style>
 </head>
 <body>
@@ -258,9 +277,9 @@
     <svg class="cyber-snake" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
         <defs>
             <linearGradient id="snake-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#b026ff;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#4dc9ff;stop-opacity:1" />
-            </linearGradient>
+    <stop offset="0%" style="stop-color:#FF7A00;stop-opacity:1" />
+    <stop offset="100%" style="stop-color:#FFB700;stop-opacity:1" />
+</linearGradient>
             
             <filter id="glow">
                 <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -317,12 +336,12 @@
         </path>
 
         <!-- Circuit Nodes -->
-        <circle cx="600" cy="100" r="3" fill="#b026ff" filter="url(#glow)"/>
-        <circle cx="800" cy="300" r="3" fill="#b026ff" filter="url(#glow)"/>
-        <circle cx="200" cy="700" r="3" fill="#b026ff" filter="url(#glow)"/>
-        <circle cx="400" cy="900" r="3" fill="#b026ff" filter="url(#glow)"/>
-        <circle cx="150" cy="500" r="3" fill="#b026ff" filter="url(#glow)"/>
-        <circle cx="850" cy="500" r="3" fill="#b026ff" filter="url(#glow)"/>
+        <circle cx="600" cy="100" r="3" fill="#FF7A00" filter="url(#glow)"/>
+        <circle cx="800" cy="300" r="3" fill="#FF7A00" filter="url(#glow)"/>
+        <circle cx="200" cy="700" r="3" fill="#FF7A00" filter="url(#glow)"/>
+        <circle cx="400" cy="900" r="3" fill="#FF7A00" filter="url(#glow)"/>
+        <circle cx="150" cy="500" r="3" fill="#FF7A00" filter="url(#glow)"/>
+        <circle cx="850" cy="500" r="3" fill="#FF7A00" filter="url(#glow)"/>
     </svg>
 
     <div class="app-container">
