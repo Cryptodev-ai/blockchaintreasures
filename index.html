@@ -401,7 +401,8 @@ function initializeMap() {
         zoom: 2,
         projection: 'globe',
         bearing: 0,
-        pitch: 0
+        pitch: 0,
+        interactive: true
     });
 
     map.addControl(new mapboxgl.NavigationControl({
@@ -453,34 +454,75 @@ function initializeMap() {
     });
 
     let rotateCamera = true;
-    let bearing = 0;
+    let isInteracting = false;
+    let rotationTimer;
+    const rotationSpeed = 0.3;
+    let currentBearing = 0;
 
     function rotateGlobe() {
-        if (rotateCamera) {
-            bearing = (bearing + 0.3) % 360;
-            map.setCenter([bearing - 180, map.getCenter().lat]);
+        if (rotateCamera && !isInteracting) {
+            currentBearing = (currentBearing + rotationSpeed) % 360;
+            map.rotateTo(currentBearing, { duration: 0 });
         }
         requestAnimationFrame(rotateGlobe);
     }
 
-    rotateGlobe();
+    function startRotation() {
+        if (!isInteracting) {
+            rotateCamera = true;
+            if (!rotationTimer) {
+                rotateGlobe();
+            }
+        }
+    }
 
-    map.on('mousedown', () => { rotateCamera = false; });
-    map.on('touchstart', () => { rotateCamera = false; });
+    function stopRotation() {
+        rotateCamera = false;
+        isInteracting = true;
+        if (rotationTimer) {
+            clearTimeout(rotationTimer);
+            rotationTimer = null;
+        }
+    }
 
+    // Event Listeners for map interactions
+    map.on('mousedown', stopRotation);
+    map.on('touchstart', stopRotation);
+    map.on('wheel', stopRotation);
+    map.on('boxzoomstart', stopRotation);
+    map.on('dragstart', stopRotation);
+    map.on('pitchstart', stopRotation);
+    map.on('rotatestart', stopRotation);
+
+    // Resume rotation after interaction ends
     map.on('mouseup', () => {
-        setTimeout(() => {
-            bearing = map.getBearing();
-            rotateCamera = true;
-        }, 5000);
+        isInteracting = false;
+        if (rotationTimer) clearTimeout(rotationTimer);
+        rotationTimer = setTimeout(startRotation, 5000);
     });
-    
+
     map.on('touchend', () => {
-        setTimeout(() => {
-            bearing = map.getBearing();
-            rotateCamera = true;
-        }, 5000);
+        isInteracting = false;
+        if (rotationTimer) clearTimeout(rotationTimer);
+        rotationTimer = setTimeout(startRotation, 5000);
     });
+
+    // Handle zoom end
+    map.on('zoomend', () => {
+        isInteracting = false;
+        if (rotationTimer) clearTimeout(rotationTimer);
+        rotationTimer = setTimeout(startRotation, 5000);
+    });
+
+    // Handle drag end
+    map.on('dragend', () => {
+        isInteracting = false;
+        if (rotationTimer) clearTimeout(rotationTimer);
+        rotationTimer = setTimeout(startRotation, 5000);
+    });
+
+    // Start initial rotation
+    startRotation();
 }
 
 function openTreasureLocation(lat, lng, name) {
