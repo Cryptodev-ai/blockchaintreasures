@@ -137,31 +137,23 @@
         }
 
         .map-container {
-            flex: 1;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            background: var(--nav-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 122, 0, 0.2);
-        }
+    flex: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 122, 0, 0.2);
+    min-height: 300px; /* Add this to ensure minimum height */
+}
 
         .map-preview {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .treasure-marker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--neon-orange);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-        }
+    width: 100%;
+    height: 100%;
+    position: relative;
+    min-height: inherit; /* Add this to inherit minimum height */
+}
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
@@ -345,8 +337,7 @@
             </div>
             <div class="map-container" onclick="openTelegramMap()">
                 <div class="map-preview">
-                    <div class="treasure-marker" style="left: 55%; top: 45%"></div>
-                    <div class="treasure-marker" style="left: 48%; top: 60%"></div>
+                   
                 </div>
             </div>
             <div class="map-description">
@@ -382,18 +373,35 @@
     </div>
 
 <script>
-let tg = window.Telegram.WebApp;
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize WebApp
-    tg.ready();
-    tg.expand();
-    
-    // Log available methods for debugging
-    console.log('WebApp version:', tg.version);
-    console.log('Available methods:', Object.keys(tg));
+    // Initialize Telegram WebApp
+    const WebApp = window.Telegram.WebApp;
+    WebApp.ready();
+    WebApp.expand();
 
-    // Navigation handlers
+    // Initialize map
+    const mapContainer = document.querySelector('.map-preview');
+    if (mapContainer) {
+        // Clear existing content
+        mapContainer.innerHTML = '';
+        
+        // Show embedded map
+        WebApp.showMap({
+            coordinates: [40.7128, -74.0060],
+            zoom: 12,
+            title: "Treasure Location",
+            can_send: true,
+            container: mapContainer
+        });
+    }
+
+    // Initialize UI handlers
+    initializeUIHandlers();
+});
+
+// Initialize all UI handlers
+function initializeUIHandlers() {
+    // Navigation button click handler
     document.querySelectorAll('.pill-icon').forEach(icon => {
         icon.addEventListener('click', function() {
             document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
@@ -404,47 +412,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Social fab handler
+    // Social sharing menu click handler
     const socialFab = document.querySelector('.social-fab');
     if (socialFab) {
         socialFab.addEventListener('click', function(event) {
             event.stopPropagation();
             this.classList.toggle('menu-open');
         });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!socialFab.contains(event.target)) {
-                socialFab.classList.remove('menu-open');
-            }
-        });
     }
-});
 
-// Map click handler function
-function openTelegramMap() {
-    if (tg.Map && tg.Map.ready) {
-        // Use the native map component
-        tg.Map.show({
-            point: [40.7128, -74.0060],
-            zoom: 12,
-            title: "Treasure Location",
-            marker: true,
-            // Can add multiple markers for different treasures
-            markers: [
-                {point: [40.7128, -74.0060], title: "Treasure #1"},
-                {point: [40.7589, -73.9850], title: "Treasure #2"}
-            ]
-        });
-    } else {
-        // Fallback to regular map opening
-        tg.openMap({
-            latitude: 40.7128,
-            longitude: -74.0060,
-            zoom: 12,
-            title: "Treasure Location"
-        });
-    }
+    // Close social sharing menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const socialFab = document.querySelector('.social-fab');
+        if (socialFab && !socialFab.contains(event.target)) {
+            socialFab.classList.remove('menu-open');
+        }
+    });
 }
 </script>
 </body>
