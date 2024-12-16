@@ -9,9 +9,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --app-bg: #0B0B2B;
-            --nav-bg: rgba(11, 11, 43, 0.3);
-            --neon-cyan: #00F0FF;
+            --app-bg: #001233;
+            --nav-bg: rgba(0, 18, 51, 0.3);
+            --neon-orange: #FF7A00;
             --text-primary: #ffffff;
         }
 
@@ -23,7 +23,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--app-bg) 0%, #070720 100%);
+            background: linear-gradient(135deg, var(--app-bg) 0%, #000a1f 100%);
             color: var(--text-primary);
             font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
@@ -44,7 +44,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 20px 60px 20px 20px;
+            padding: 20px;
             gap: 20px;
             position: relative;
             z-index: 1;
@@ -59,8 +59,8 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 4px;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+            color: var(--neon-orange);
+            text-shadow: 0 0 10px rgba(255, 122, 0, 0.4);
         }
 
         .logo span {
@@ -70,55 +70,45 @@
             opacity: 0.8;
         }
 
-        .dot-nav {
+        .pill-nav {
             position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 18, 51, 0.9);
+            padding: 10px;
+            border-radius: 30px;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 122, 0, 0.2);
             z-index: 10;
         }
 
-        .dot {
-            width: 10px;
-            height: 10px;
+        .pill-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: rgba(0, 240, 255, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
         }
 
-        .dot:hover {
-            background: var(--neon-cyan);
+        .pill-icon i {
+            color: white;
+            font-size: 18px;
         }
 
-        .dot.active {
-            background: var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan);
+        .pill-icon.active {
+            background: var(--neon-orange);
+            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
         }
 
-        .dot::after {
-            content: attr(data-label);
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(11, 11, 43, 0.9);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            white-space: nowrap;
-            color: var(--neon-cyan);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .dot:hover::after {
-            opacity: 1;
+        .pill-icon.active i {
+            color: var(--app-bg);
         }
 
         .section {
@@ -146,7 +136,7 @@
             cursor: pointer;
             background: var(--nav-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 240, 255, 0.2);
+            border: 1px solid rgba(255, 122, 0, 0.2);
         }
 
         .map-preview {
@@ -159,16 +149,16 @@
             position: absolute;
             width: 20px;
             height: 20px;
-            background: var(--neon-cyan);
+            background: var(--neon-orange);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.6); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 240, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 122, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 122, 0, 0); }
         }
 
         .coming-soon {
@@ -182,13 +172,13 @@
             font-size: 32px;
             font-weight: 700;
             letter-spacing: 2px;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            color: var(--neon-orange);
+            text-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
         }
 
         .social-menu {
             position: fixed;
-            bottom: 20px;
+            bottom: 100px;
             right: 20px;
             z-index: 100;
         }
@@ -196,13 +186,13 @@
         .social-main {
             width: 50px;
             height: 50px;
-            background: var(--neon-cyan);
+            background: var(--neon-orange);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
             position: relative;
             z-index: 2;
             transition: transform 0.3s ease;
@@ -237,19 +227,19 @@
             position: absolute;
             width: 40px;
             height: 40px;
-            background: rgba(11, 11, 43, 0.9);
+            background: rgba(0, 18, 51, 0.9);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--neon-cyan);
+            color: var(--neon-orange);
             transform-origin: 75px 75px;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
 
         .social-item:hover {
-            background: var(--neon-cyan);
+            background: var(--neon-orange);
             color: var(--app-bg);
         }
 
@@ -341,10 +331,16 @@
             <span>TREASURES</span>
         </div>
 
-        <nav class="dot-nav">
-            <div class="dot active" data-label="Treasures" data-section="treasures"></div>
-            <div class="dot" data-label="Staking" data-section="staking"></div>
-            <div class="dot" data-label="NFTs" data-section="nft"></div>
+        <nav class="pill-nav">
+            <div class="pill-icon active" data-section="treasures">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="pill-icon" data-section="staking">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="pill-icon" data-section="nft">
+                <i class="fas fa-cube"></i>
+            </div>
         </nav>
 
         <section id="treasures" class="section active">
@@ -401,72 +397,49 @@
 
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
+<script>
+       // Initialize Telegram WebApp
+       if (window.Telegram && window.Telegram.WebApp) {
+           window.Telegram.WebApp.ready();
+           window.Telegram.WebApp.expand();
+       }
 
-    <script>
-        // Initialize Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-        }
+       // Navigation functionality
+       document.querySelectorAll('.pill-icon').forEach(icon => {
+           icon.addEventListener('click', function() {
+               document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+               this.classList.add('active');
 
-        // Navigation functionality
-        document.querySelectorAll('.dot').forEach(dot => {
-            dot.addEventListener('click', function() {
-                document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-                this.classList.add('active');
+               document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+               document.getElementById(this.dataset.section).classList.add('active');
+           });
+       });
 
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(this.dataset.section).classList.add('active');
-            });
-        });
+       // Social menu toggle
+       document.querySelector('.social-main').addEventListener('click', function() {
+           document.querySelector('.social-menu').classList.toggle('active');
+       });
 
-        // Social menu toggle
-        document.querySelector('.social-main').addEventListener('click', function() {
-            document.querySelector('.social-menu').classList.toggle('active');
+       // Map functionality
+       function openTelegramMap() {
+           if (window.Telegram && window.Telegram.WebApp) {
+               try {
+                   window.Telegram.WebApp.requestLocation(function(location) {
+                       window.Telegram.WebApp.showLocation(location.latitude, location.longitude);
+                   });
+               } catch (e) {
+                   console.error('Error opening map:', e);
+               }
+           }
+       }
 
- <script>
-    // Initialize Telegram WebApp
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-    }
-
-    // Navigation functionality
-    document.querySelectorAll('.dot').forEach(dot => {
-        dot.addEventListener('click', function() {
-            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-            this.classList.add('active');
-
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(this.dataset.section).classList.add('active');
-        });
-    });
-
-    // Social menu toggle
-    document.querySelector('.social-main').addEventListener('click', function() {
-        document.querySelector('.social-menu').classList.toggle('active');
-    });
-
-    // Map functionality
-    function openTelegramMap() {
-        if (window.Telegram && window.Telegram.WebApp) {
-            try {
-                window.Telegram.WebApp.requestLocation(function(location) {
-                    window.Telegram.WebApp.showLocation(location.latitude, location.longitude);
-                });
-            } catch (e) {
-                console.error('Error opening map:', e);
-            }
-        }
-    }
-
-    // Handle viewport changes
-    if (window.Telegram.WebApp) {
-        window.Telegram.WebApp.onEvent('viewportChanged', function() {
-            document.documentElement.style.setProperty('--tg-viewport-height', 
-                `${window.Telegram.WebApp.viewportHeight}px`);
-        });
-    }
-</script>
+       // Handle viewport changes
+       if (window.Telegram.WebApp) {
+           window.Telegram.WebApp.onEvent('viewportChanged', function() {
+               document.documentElement.style.setProperty('--tg-viewport-height', 
+                   `${window.Telegram.WebApp.viewportHeight}px`);
+           });
+       }
+   </script>
 </body>
 </html>
