@@ -485,8 +485,8 @@ function initializeGlobeMap() {
     ];
 
     const globe = Globe({
-        rendererConfig: { antialias: false }, // Disable antialiasing for better performance
-        waitForGlobeReady: false // Don't wait for texture to load
+        rendererConfig: { antialias: false },
+        waitForGlobeReady: false
     })
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
         .pointsData(treasures)
@@ -499,21 +499,54 @@ function initializeGlobeMap() {
         .atmosphereAltitude(0.15)
         .showAtmosphere(true)
         .pointsMerge(true)
+        .enablePointerInteraction(true)
         (document.getElementById('globeViz'));
 
-    // Set initial position with higher altitude for better performance
+    // Set initial position
     globe.pointOfView({ lat: 20, lng: 0, altitude: 2.8 });
 
-    // Slower rotation for better performance
+    // Control variables for auto-rotation
+    let isAutoRotating = true;
     let currentLng = 0;
-    setInterval(() => {
-        currentLng = (currentLng + 0.3) % 360;
-        globe.pointOfView({
-            lat: 20,
-            lng: currentLng,
-            altitude: 2.8
-        });
-    }, 150);
+    let rotationInterval;
+
+    // Function to start auto-rotation
+    function startAutoRotation() {
+        if (!rotationInterval) {
+            rotationInterval = setInterval(() => {
+                if (isAutoRotating) {
+                    currentLng = (currentLng + 0.3) % 360;
+                    globe.pointOfView({
+                        lat: globe.pointOfView().lat,
+                        lng: currentLng,
+                        altitude: globe.pointOfView().altitude
+                    });
+                }
+            }, 150);
+        }
+    }
+
+    // Start initial auto-rotation
+    startAutoRotation();
+
+    // Handle user interactions
+    let isDragging = false;
+    
+    globe.controls().addEventListener('start', () => {
+        isDragging = true;
+        isAutoRotating = false;
+    });
+
+    globe.controls().addEventListener('end', () => {
+        isDragging = false;
+        // Resume auto-rotation after 2 seconds of no interaction
+        setTimeout(() => {
+            if (!isDragging) {
+                currentLng = globe.pointOfView().lng;
+                isAutoRotating = true;
+            }
+        }, 2000);
+    });
 
     // Handle point clicks
     globe.onPointClick(point => {
