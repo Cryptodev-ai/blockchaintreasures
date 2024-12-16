@@ -423,6 +423,31 @@
         } else {
             console.error('Telegram WebApp not available');
         }
+document.querySelectorAll('.pill-icon').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(this.dataset.section).classList.add('active');
+                });
+            });
+
+            const socialFab = document.querySelector('.social-fab');
+            if (socialFab) {
+                socialFab.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    this.classList.toggle('menu-open');
+                });
+            }
+
+            document.addEventListener('click', function(event) {
+                const socialFab = document.querySelector('.social-fab');
+                if (socialFab && !socialFab.contains(event.target)) {
+                    socialFab.classList.remove('menu-open');
+                }
+            });
+        }
     });
 </script>
 </body>
