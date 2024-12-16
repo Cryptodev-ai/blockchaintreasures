@@ -177,90 +177,58 @@ body {
 }
 
 /* Updated Social Menu Styles */
-.social-menu {
-    position: fixed;
-    bottom: 100px;
-    right: 20px;
-    z-index: 100;
-}
+.social-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+            z-index: 100;
+        }
 
-.social-main {
-    width: 50px;
-    height: 50px;
-    background: var(--neon-orange);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-    position: relative;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
+        .social-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
 
-.social-main i {
-    color: var(--app-bg);
-    font-size: 20px;
-    transition: transform 0.3s ease;
-}
+        .social-fab:hover .social-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
 
-.social-menu.active .social-main i {
-    transform: rotate(45deg);
-}
+        .social-item {
+            width: 40px;
+            height: 40px;
+            background: rgba(10, 10, 10, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            transition: all 0.3s ease;
+        }
 
-.social-items {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.social-menu.active .social-items {
-    opacity: 1;
-    visibility: visible;
-}
-
-.social-item {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 18, 51, 0.9);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--neon-orange);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    opacity: 0;
-    transform: scale(0);
-}
-
-.social-menu.active .social-item {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.social-item:nth-child(1) { transition-delay: 0s; }
-.social-item:nth-child(2) { transition-delay: 0.1s; }
-.social-item:nth-child(3) { transition-delay: 0.2s; }
-.social-item:nth-child(4) { transition-delay: 0.3s; }
-.social-item:nth-child(5) { transition-delay: 0.4s; }
-
-.social-menu.active .social-item:nth-child(1) { transform: translate(-60px, -60px); }
-.social-menu.active .social-item:nth-child(2) { transform: translate(-80px, 0); }
-.social-menu.active .social-item:nth-child(3) { transform: translate(-60px, 60px); }
-.social-menu.active .social-item:nth-child(4) { transform: translate(0, 80px); }
-.social-menu.active .social-item:nth-child(5) { transform: translate(60px, 60px); }
-
-.social-item:hover {
-    background: var(--neon-orange);
-    color: var(--app-bg);
-    transform: scale(1.1);
-}
+        .social-item:hover {
+            transform: scale(1.1);
+            background: var(--neon-green);
+            color: var(--dark-bg);
+        }
 
 .privacy-link {
     text-align: center;
@@ -391,28 +359,16 @@ body {
             </div>
         </section>
 
+        <div class="social-fab">
+        <i class="fas fa-share-alt"></i>
         <div class="social-menu">
-            <div class="social-main">
-                <i class="fas fa-plus"></i>
-            </div>
-            <div class="social-items">
-                <a href="#" class="social-item" style="transform: rotate(0deg) translate(75px) rotate(0deg)">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="social-item" style="transform: rotate(72deg) translate(75px) rotate(-72deg)">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-item" style="transform: rotate(144deg) translate(75px) rotate(-144deg)">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-item" style="transform: rotate(216deg) translate(75px) rotate(-216deg)">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="#" class="social-item" style="transform: rotate(288deg) translate(75px) rotate(-288deg)">
-                    <i class="fab fa-telegram"></i>
-                </a>
-            </div>
+            <div class="social-item"><i class="fab fa-twitter"></i></div>
+            <div class="social-item"><i class="fab fa-facebook-f"></i></div>
+            <div class="social-item"><i class="fab fa-instagram"></i></div>
+            <div class="social-item"><i class="fab fa-tiktok"></i></div>
+            <div class="social-item"><i class="fab fa-telegram"></i></div>
         </div>
+    </div>
 
         <a href="#" class="privacy-link">Privacy & Policy</a>
     </div>
