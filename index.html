@@ -178,8 +178,8 @@
 
         .social-fab {
             position: fixed;
-            bottom: 10px;
-            right: 10px;
+            bottom: 15px;
+            right: 15px;
             width: 50px;
             height: 50px;
             background: var(--neon-orange);
@@ -387,42 +387,47 @@
             // Logging WebApp version for debugging
             console.log('Telegram WebApp Version:', WebApp.version);
 
-            // Map container click handler with comprehensive error handling
-            const mapContainer = document.querySelector('.map-container');
-            if (mapContainer) {
-                mapContainer.addEventListener('click', () => {
-                    try {
-                        // Check if location is supported
-                        if (WebApp.isVersionAtLeast('6.1')) {
-                            // Attempt to get location
-                            WebApp.requestLocation(location => {
-                                if (location && location.latitude && location.longitude) {
-                                    // Successfully got location
-                                    console.log('Location obtained:', location);
+            // Comprehensive location handler
+            function handleLocation(mapContainer) {
+                try {
+                    WebApp.requestLocation(
+                        (location) => {
+                            console.log('Location Request Successful');
+                            console.log('Full Location Object:', JSON.stringify(location));
+                            
+                            if (location) {
+                                console.log('Latitude:', location.latitude);
+                                console.log('Longitude:', location.longitude);
+                                console.log('Accuracy:', location.accuracy);
 
-                                    // Open map with precise location
+                                if (location.latitude && location.longitude) {
                                     WebApp.openLink(`https://maps.google.com/maps?q=${location.latitude},${location.longitude}`, {
                                         try_instant_view: true
                                     });
-
-                                    // Optional: Send location data
-                                    WebApp.sendData(JSON.stringify({
-                                        type: 'location',
-                                        latitude: location.latitude,
-                                        longitude: location.longitude
-                                    }));
                                 } else {
-                                    WebApp.showAlert('Unable to retrieve location. Please check your device settings.');
+                                    WebApp.showAlert('Location coordinates are incomplete. Details: ' + JSON.stringify(location));
                                 }
-                            });
-                        } else {
-                            // Fallback for older versions
-                            WebApp.showAlert('Location services are not supported in your Telegram version.');
+                            } else {
+                                WebApp.showAlert('No location data received. Location object is null.');
+                            }
+                        },
+                        (error) => {
+                            console.error('Location Request Error:', JSON.stringify(error));
+                            WebApp.showAlert('Location request failed. Error details: ' + JSON.stringify(error));
                         }
-                    } catch (error) {
-                        console.error('Location request error:', error);
-                        WebApp.showAlert('An error occurred while trying to get your location.');
-                    }
+                    );
+                } catch (error) {
+                    console.error('Unexpected Location Handling Error:', error);
+                    WebApp.showAlert('Unexpected error: ' + error.message);
+                }
+            }
+
+            // Map container click handler
+            const mapContainer = document.querySelector('.map-container');
+            if (mapContainer) {
+                mapContainer.addEventListener('click', () => {
+                    console.log('Map Container Clicked');
+                    handleLocation(mapContainer);
                 });
             }
 
@@ -463,6 +468,6 @@
             console.error('Telegram WebApp is not available');
         }
     });
-    </script>
+</script>
 </body>
 </html>
