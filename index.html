@@ -444,39 +444,44 @@ function openTelegramMap() {
     // Check Telegram WebApp availability
     if (window.Telegram && window.Telegram.WebApp) {
         const WebApp = window.Telegram.WebApp;
-
-        // Check for openMap method
-        if (typeof WebApp.openMap === 'function') {
-            console.log('Attempting openMap');
-            WebApp.openMap({
-                latitude: 40.7128,
-                longitude: -74.0060,
-                zoom: 15,
-                title: "Treasure Location"
-            }).catch(error => {
-                console.error('Error opening map:', error);
-                WebApp.showAlert('Could not open map. Please try again.');
+        
+        try {
+            // Use WebApp.showPopup for older versions
+            WebApp.showPopup({
+                title: 'Treasure Location',
+                message: 'Would you like to view the treasure location?',
+                buttons: [
+                    {
+                        id: "view",
+                        type: "default",
+                        text: "View Location"
+                    },
+                    {
+                        id: "cancel",
+                        type: "cancel",
+                        text: "Cancel"
+                    }
+                ]
+            }, function(buttonId) {
+                if (buttonId === "view") {
+                    // Use regular link as fallback
+                    const latitude = 40.7128;
+                    const longitude = -74.0060;
+                    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                    
+                    if (WebApp.openLink) {
+                        WebApp.openLink(url);
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                }
             });
-        } else {
-            console.warn('openMap not available, trying requestLocation');
-            
-            // Check for requestLocation method
-            if (typeof WebApp.requestLocation === 'function') {
-                console.log('Attempting requestLocation');
-                WebApp.requestLocation()
-                    .then(location => {
-                        console.log('Location received:', location);
-                        if (location) {
-                            WebApp.showAlert(`Found nearby treasure at: ${location.latitude}, ${location.longitude}`);
-                        }
-                    })
-                    .catch(() => {
-                        WebApp.showAlert('Please enable location services to find nearby treasures');
-                    });
-            } else {
-                console.warn('Location services not available');
-                WebApp.showAlert('Location services are not available in this version of Telegram');
-            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Ultimate fallback
+            const latitude = 40.7128;
+            const longitude = -74.0060;
+            window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, '_blank');
         }
     } else {
         console.error('Telegram WebApp not available');
