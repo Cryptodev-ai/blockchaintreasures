@@ -178,7 +178,7 @@
 
         .social-fab {
             position: fixed;
-            bottom: 19px;
+            bottom: 22px;
             right: 15px;
             width: 50px;
             height: 50px;
@@ -378,84 +378,43 @@
         if (window.Telegram && window.Telegram.WebApp) {
             const WebApp = window.Telegram.WebApp;
             
-            // Initialize with 2.0 method
             WebApp.ready();
             WebApp.expand();
 
-            // Main color theme matching your app's design
-            WebApp.setThemeParams({
-                bg_color: '#001233',
-                text_color: '#ffffff',
-                hint_color: '#FF7A00',
-                button_color: '#FF7A00',
-                button_text_color: '#ffffff'
-            });
+            // Log all available methods
+            console.log('Available Telegram WebApp methods:', Object.keys(WebApp));
 
-            // Enable main button for location
-            const mainButton = WebApp.MainButton;
-            mainButton.setText('Share Location');
-            mainButton.show();
+            // Map container click handler
+            const mapContainer = document.querySelector('.map-container');
+            if (mapContainer) {
+                mapContainer.addEventListener('click', () => {
+                    console.log('Map clicked');
+                    
+                    // Try different possible methods
+                    if (WebApp.openLink) {
+                        console.log('Attempting to open link');
+                        WebApp.openLink('https://maps.google.com/maps', {
+                            try_instant_view: true
+                        });
+                    } else {
+                        console.error('openLink method not available');
+                    }
 
-            // Location handling with 2.0 methods
-            mainButton.onClick(() => {
-                try {
-                    // Use new location request method
-                    WebApp.requestLocation((location) => {
-                        if (location) {
-                            console.log('Location received:', location);
-                            
-                            // Open maps with received coordinates
-                            WebApp.openLink(`https://maps.google.com/maps?q=${location.latitude},${location.longitude}`, {
-                                try_instant_view: true
-                            });
+                    // Alternative debugging methods
+                    if (WebApp.sendData) {
+                        console.log('Attempting to send data');
+                        try {
+                            WebApp.sendData(JSON.stringify({
+                                type: 'debug_location_request'
+                            }));
+                        } catch (error) {
+                            console.error('sendData error:', error);
                         }
-                    });
-                } catch (error) {
-                    console.error('Location request error:', error);
-                    WebApp.showAlert('Could not get location: ' + error.message);
-                }
-            });
-
-            // Navigation functionality
-            document.querySelectorAll('.pill-icon').forEach(icon => {
-                icon.addEventListener('click', function() {
-                    document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-
-                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    document.getElementById(this.dataset.section).classList.add('active');
-                });
-            });
-
-            // Social menu toggle
-            const socialFab = document.querySelector('.social-fab');
-            if (socialFab) {
-                socialFab.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    this.classList.toggle('menu-open');
+                    }
                 });
             }
-
-            // Close menu when clicking outside
-            document.addEventListener('click', function(event) {
-                const socialFab = document.querySelector('.social-fab');
-                if (socialFab && !socialFab.contains(event.target)) {
-                    socialFab.classList.remove('menu-open');
-                }
-            });
-
-            // Viewport changes
-            WebApp.onEvent('viewportChanged', () => {
-                document.documentElement.style.setProperty('--tg-viewport-height', 
-                    `${WebApp.viewportHeight}px`);
-            });
-
-            // Closing the app
-            WebApp.onEvent('backButtonClicked', () => {
-                WebApp.close();
-            });
         } else {
-            console.error('Telegram WebApp is not available');
+            console.error('Telegram WebApp is not available at all');
         }
     });
 </script>
