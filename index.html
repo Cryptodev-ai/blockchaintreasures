@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.webgl@0.3.0/dist/leaflet.webgl.js"></script>
 <script src="https://unpkg.com/three@0.137.0/build/three.min.js"></script>
-<script src="https://unpkg.com/@elfalem/leaflet-3d@0.4.0/dist/leaflet.3d.js"></script>
     <!-- Include Telegram WebApp 2.0 library -->
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
     <!-- Add Telegram WebApp 2.0 meta tags -->
@@ -478,24 +478,26 @@ function initializeGlobeMap() {
     const mapPreview = document.querySelector('.map-preview');
     mapPreview.innerHTML = '<div id="globe" style="width: 100%; height: 100%;"></div>';
 
-    const map = L.map('globe', {
+    // Initialize WebGL Globe
+    const globe = L.map('globe', {
         worldCopyJump: false,
         zoomControl: false,
-        minZoom: 3,
-        maxZoom: 8
-    }).setView([20, 0], 3);
+        minZoom: 2,
+        maxZoom: 8,
+        scrollWheelZoom: true,
+        dragging: true,
+        webgl: true,
+        globe: true  // Enable globe mode
+    }).setView([20, 0], 2);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    // Add dark theme map layer with globe projection
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors, &copy; CartoDB',
+        noWrap: true,
+        globe: true
+    }).addTo(globe);
 
-    const earthLayer = L.earth3d({
-        texture: 'https://unpkg.com/@elfalem/leaflet-3d@0.4.0/examples/texture/2_no_clouds_4k.jpg',
-        sphere: true,
-        dragRotate: true
-    });
-    map.addLayer(earthLayer);
-
+    // Define treasure locations
     const treasures = [
         { lat: 40.7128, lng: -74.0060, name: "New York Treasure" },
         { lat: 34.0522, lng: -118.2437, name: "LA Treasure" },
@@ -503,6 +505,7 @@ function initializeGlobeMap() {
         { lat: 35.6762, lng: 139.6503, name: "Tokyo Treasure" }
     ];
 
+    // Add markers for each treasure
     treasures.forEach(treasure => {
         const marker = L.marker([treasure.lat, treasure.lng], {
             icon: L.divIcon({
@@ -510,7 +513,7 @@ function initializeGlobeMap() {
                 html: '',
                 iconSize: [20, 20]
             })
-        }).addTo(map);
+        }).addTo(globe);
 
         const popupContent = `
             <div class="treasure-popup">
@@ -524,11 +527,20 @@ function initializeGlobeMap() {
         marker.bindPopup(popupContent);
     });
 
+    // Auto rotation
     let rotation = 0;
     setInterval(() => {
-        rotation += 0.5;
-        map.setView([20, rotation], 3, { animate: false });
+        rotation = (rotation + 0.5) % 360;
+        globe.setView([20, rotation - 180], globe.getZoom(), { 
+            animate: true,
+            duration: 0.1
+        });
     }, 100);
+
+    // Add zoom control
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(globe);
 }
 
 function openTreasureLocation(lat, lng, name) {
