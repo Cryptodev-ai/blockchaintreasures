@@ -377,195 +377,185 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const WebApp = window.Telegram.WebApp;
-    WebApp.ready();
-    WebApp.expand();
+   const WebApp = window.Telegram.WebApp;
+   WebApp.ready();
+   WebApp.expand();
 
-    // Map Initialization
-    mapboxgl.accessToken = 'pk.eyJ1IjoiaXZhbmNvaW45OCIsImEiOiJjbTNyY3RkYWcwNHJxMmxzYnR6NXRqdXNkIn0.u2o-DhnCaqOkqkBa5qJOAQ';
+   mapboxgl.accessToken = 'pk.eyJ1IjoiaXZhbmNvaW45OCIsImEiOiJjbTNyY3RkYWcwNHJxMmxzYnR6NXRqdXNkIn0.u2o-DhnCaqOkqkBa5qJOAQ';
 
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/navigation-night-v1',
-        center: [0, 20],
-        zoom: 2,
-        projection: 'globe',
-        bearing: 0,
-        pitch: 0,
-        interactive: true
-    });
+   const map = new mapboxgl.Map({
+       container: 'map',
+       style: 'mapbox://styles/mapbox/navigation-night-v1',
+       center: [0, 20],
+       zoom: 2,
+       projection: 'globe',
+       bearing: 0,
+       pitch: 0,
+       interactive: true
+   });
 
-    // Geolocation marker variable to track and remove previous markers
-    let userLocationMarker = null;
+   let userLocationMarker = null;
 
-    // Geolocation functionality
-    const geolocationButton = document.getElementById('geolocation-button');
-    
-    geolocationButton.addEventListener('click', () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    
-                    // Remove previous user location marker if exists
-                    if (userLocationMarker) {
-                        userLocationMarker.remove();
-                    }
+   const geolocationButton = document.getElementById('geolocation-button');
+   
+   geolocationButton.addEventListener('click', () => {
+       if (navigator.geolocation) {
+           navigator.geolocation.getCurrentPosition(
+               (position) => {
+                   const { latitude, longitude } = position.coords;
+                   
+                   if (userLocationMarker) {
+                       userLocationMarker.remove();
+                   }
 
-                    // Create a custom marker for user's location
-                    const el = document.createElement('div');
-                    el.style.width = '30px';
-                    el.style.height = '30px';
-                    el.style.backgroundColor = 'blue';
-                    el.style.borderRadius = '50%';
-                    el.style.border = '3px solid white';
-                    el.style.boxShadow = '0 0 10px rgba(0,0,255,0.5)';
+                   const el = document.createElement('div');
+                   el.style.width = '30px';
+                   el.style.height = '30px';
+                   el.style.backgroundColor = 'blue';
+                   el.style.borderRadius = '50%';
+                   el.style.border = '3px solid white';
+                   el.style.boxShadow = '0 0 10px rgba(0,0,255,0.5)';
 
-                    // Add the marker to the map
-                    userLocationMarker = new mapboxgl.Marker(el)
-                        .setLngLat([longitude, latitude])
-                        .addTo(map);
+                   userLocationMarker = new mapboxgl.Marker(el)
+                       .setLngLat([longitude, latitude])
+                       .addTo(map);
 
-                    // Fly to the user's location with a good zoom level
-                    map.flyTo({
-                        center: [longitude, latitude],
-                        zoom: 10,
-                        essential: true
-                    });
+                   map.flyTo({
+                       center: [longitude, latitude],
+                       zoom: 10,
+                       essential: true
+                   });
 
-                    // Create a popup with location details
-                    const popup = new mapboxgl.Popup({ offset: 25 })
-                        .setHTML(`
-                            <h3>Your Current Location</h3>
-                            <p>Latitude: ${latitude.toFixed(4)}</p>
-                            <p>Longitude: ${longitude.toFixed(4)}</p>
-                        `);
+                   const popup = new mapboxgl.Popup({ offset: 25 })
+                       .setHTML(`
+                           <h3>Your Current Location</h3>
+                           <p>Latitude: ${latitude.toFixed(4)}</p>
+                           <p>Longitude: ${longitude.toFixed(4)}</p>
+                       `);
 
-                    // Add popup to the marker
-                    userLocationMarker.setPopup(popup);
+                   userLocationMarker.setPopup(popup);
 
-                    // Optional: Send location data to Telegram
-                    WebApp.sendData(JSON.stringify({
-                        type: 'user_location',
-                        latitude: latitude,
-                        longitude: longitude
-                    }));
+                   WebApp.sendData(JSON.stringify({
+                       type: 'user_location',
+                       latitude: latitude,
+                       longitude: longitude
+                   }));
 
-                    // Show a brief alert
-                    WebApp.showAlert(`Location found! Moved to your current position.`);
-                },
-                (error) => {
-                    let errorMessage = '';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage = "Location access denied. Please enable location permissions.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage = "Location information is unavailable.";
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage = "Location request timed out.";
-                            break;
-                        default:
-                            errorMessage = "An unknown error occurred while finding your location.";
-                    }
-                    WebApp.showAlert(errorMessage);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0
-                }
-            );
-        } else {
-            WebApp.showAlert("Geolocation is not supported by this browser.");
-        }
-    });
+                   if (WebApp.HapticFeedback) {
+                       WebApp.HapticFeedback.impactOccurred('light');
+                   }
+               },
+               (error) => {
+                   let errorMessage = '';
+                   switch(error.code) {
+                       case error.PERMISSION_DENIED:
+                           errorMessage = "Location access denied. Please enable location permissions.";
+                           break;
+                       case error.POSITION_UNAVAILABLE:
+                           errorMessage = "Location information is unavailable.";
+                           break;
+                       case error.TIMEOUT:
+                           errorMessage = "Location request timed out.";
+                           break;
+                       default:
+                           errorMessage = "An unknown error occurred while finding your location.";
+                   }
+                   
+                   console.error(errorMessage);
+               },
+               {
+                   enableHighAccuracy: true,
+                   timeout: 5000,
+                   maximumAge: 0
+               }
+           );
+       } else {
+           console.error("Geolocation is not supported by this browser.");
+       }
+   });
 
-    map.addControl(new mapboxgl.NavigationControl({
-        showCompass: false
-    }), 'top-right');
+   map.addControl(new mapboxgl.NavigationControl({
+       showCompass: false
+   }), 'top-right');
 
-    map.on('load', () => {
-        map.setFog({
-            color: 'rgb(186, 210, 235)',
-            'high-color': 'rgb(36, 92, 223)',
-            'horizon-blend': 0.02
-        });
+   map.on('load', () => {
+       map.setFog({
+           color: 'rgb(186, 210, 235)',
+           'high-color': 'rgb(36, 92, 223)',
+           'horizon-blend': 0.02
+       });
 
-        map.addLayer({
-            id: 'atmosphere',
-            type: 'sky',
-            paint: {
-                'sky-type': 'atmosphere',
-                'sky-atmosphere-sun': [0.0, 90.0],
-                'sky-atmosphere-sun-intensity': 15
-            }
-        });
+       map.addLayer({
+           id: 'atmosphere',
+           type: 'sky',
+           paint: {
+               'sky-type': 'atmosphere',
+               'sky-atmosphere-sun': [0.0, 90.0],
+               'sky-atmosphere-sun-intensity': 15
+           }
+       });
 
-        const treasures = [
-            { coordinates: [-74.0060, 40.7128], name: "New York Treasure" },
-            { coordinates: [-118.2437, 34.0522], name: "LA Treasure" },
-            { coordinates: [-0.1278, 51.5074], name: "London Treasure" },
-            { coordinates: [139.6503, 35.6762], name: "Tokyo Treasure" }
-        ];
+       const treasures = [
+           { coordinates: [-74.0060, 40.7128], name: "New York Treasure" },
+           { coordinates: [-118.2437, 34.0522], name: "LA Treasure" },
+           { coordinates: [-0.1278, 51.5074], name: "London Treasure" },
+           { coordinates: [139.6503, 35.6762], name: "Tokyo Treasure" }
+       ];
 
-        treasures.forEach(treasure => {
-            const el = document.createElement('div');
-            el.className = 'treasure-marker';
+       treasures.forEach(treasure => {
+           const el = document.createElement('div');
+           el.className = 'treasure-marker';
 
-            new mapboxgl.Marker(el)
-                .setLngLat(treasure.coordinates)
-                .setPopup(
-                    new mapboxgl.Popup({ offset: 25 })
-                        .setHTML(`
-                            <h3 style="color: #FF7A00; margin: 0;">${treasure.name}</h3>
-                            <button onclick="openTreasureLocation(${treasure.coordinates[1]}, ${treasure.coordinates[0]}, '${treasure.name}')" 
-                                    style="background: #FF7A00; color: white; border: none; padding: 5px 10px; margin-top: 5px; border-radius: 5px; cursor: pointer;">
-                                Start Hunt
-                            </button>
-                        `)
-                )
-                .addTo(map);
-        });
-    });
+           new mapboxgl.Marker(el)
+               .setLngLat(treasure.coordinates)
+               .setPopup(
+                   new mapboxgl.Popup({ offset: 25 })
+                       .setHTML(`
+                           <h3 style="color: #FF7A00; margin: 0;">${treasure.name}</h3>
+                           <button onclick="openTreasureLocation(${treasure.coordinates[1]}, ${treasure.coordinates[0]}, '${treasure.name}')" 
+                                   style="background: #FF7A00; color: white; border: none; padding: 5px 10px; margin-top: 5px; border-radius: 5px; cursor: pointer;">
+                               Start Hunt
+                           </button>
+                       `)
+               )
+               .addTo(map);
+       });
+   });
 
-    // Navigation functionality
-    document.querySelectorAll('.pill-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
-            document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(this.dataset.section).classList.add('active');
-        });
-    });
+   document.querySelectorAll('.pill-icon').forEach(icon => {
+       icon.addEventListener('click', function() {
+           document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+           this.classList.add('active');
+           document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+           document.getElementById(this.dataset.section).classList.add('active');
+       });
+   });
 
-    // Social menu toggle
-    const socialFab = document.querySelector('.social-fab');
-    if (socialFab) {
-        socialFab.addEventListener('click', function(event) {
-            event.stopPropagation();
-            this.classList.toggle('menu-open');
-        });
+   const socialFab = document.querySelector('.social-fab');
+   if (socialFab) {
+       socialFab.addEventListener('click', function(event) {
+           event.stopPropagation();
+           this.classList.toggle('menu-open');
+       });
 
-        document.addEventListener('click', function(event) {
-            if (socialFab && !socialFab.contains(event.target)) {
-                socialFab.classList.remove('menu-open');
-            }
-        });
-    }
+       document.addEventListener('click', function(event) {
+           if (socialFab && !socialFab.contains(event.target)) {
+               socialFab.classList.remove('menu-open');
+           }
+       });
+   }
 });
 
 function openTreasureLocation(lat, lng, name) {
-    const WebApp = window.Telegram.WebApp;
-    if (WebApp.openMap) {
-        WebApp.openMap({
-            latitude: lat,
-            longitude: lng,
-            zoom: 15,
-            title: name
-        });
-    }
+   const WebApp = window.Telegram.WebApp;
+   if (WebApp.openMap) {
+       WebApp.openMap({
+           latitude: lat,
+           longitude: lng,
+           zoom: 15,
+           title: name
+       });
+   }
 }
 </script>
 </body>
