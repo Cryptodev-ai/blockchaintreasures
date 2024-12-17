@@ -377,248 +377,262 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-   const WebApp = window.Telegram.WebApp;
-   WebApp.ready();
-   WebApp.expand();
+  const WebApp = window.Telegram.WebApp;
+  WebApp.ready();
+  WebApp.expand();
 
-   mapboxgl.accessToken = 'pk.eyJ1IjoiaXZhbmNvaW45OCIsImEiOiJjbTNyY3RkYWcwNHJxMmxzYnR6NXRqdXNkIn0.u2o-DhnCaqOkqkBa5qJOAQ';
+  mapboxgl.accessToken = 'pk.eyJ1IjoiaXZhbmNvaW45OCIsImEiOiJjbTNyY3RkYWcwNHJxMmxzYnR6NXRqdXNkIn0.u2o-DhnCaqOkqkBa5qJOAQ';
 
-   const map = new mapboxgl.Map({
-       container: 'map',
-       style: 'mapbox://styles/mapbox/navigation-night-v1',
-       center: [0, 20],
-       zoom: 2,
-       projection: 'globe',
-       bearing: 0,
-       pitch: 0,
-       interactive: true
-   });
+  const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/navigation-night-v1',
+      center: [0, 20],
+      zoom: 2,
+      projection: 'globe',
+      bearing: 0,
+      pitch: 0,
+      interactive: true
+  });
 
-   const globalCities = [
-       { name: "New York", coordinates: [-74.0060, 40.7128] },
-       { name: "London", coordinates: [-0.1278, 51.5074] },
-       { name: "Tokyo", coordinates: [139.6903, 35.6762] },
-       { name: "Paris", coordinates: [2.3522, 48.8566] },
-       { name: "Sydney", coordinates: [151.2093, -33.8688] },
-       { name: "Rio de Janeiro", coordinates: [-43.1729, -22.9068] },
-       { name: "Dubai", coordinates: [55.2708, 25.2048] },
-       { name: "Moscow", coordinates: [37.6173, 55.7558] },
-       { name: "Beijing", coordinates: [116.4074, 39.9042] },
-       { name: "Los Angeles", coordinates: [-118.2437, 34.0522] },
-       { name: "Cape Town", coordinates: [18.4241, -33.9249] },
-       { name: "Mumbai", coordinates: [72.8777, 19.0760] },
-       { name: "Berlin", coordinates: [13.4050, 52.5200] },
-       { name: "Toronto", coordinates: [-79.3832, 43.6532] },
-       { name: "Singapore", coordinates: [103.8198, 1.3521] },
-       { name: "Cairo", coordinates: [31.2357, 30.0444] },
-       { name: "Mexico City", coordinates: [-99.1332, 19.4326] },
-       { name: "Rome", coordinates: [12.4964, 41.9028] },
-       { name: "Istanbul", coordinates: [28.9784, 41.0082] },
-       { name: "Jerusalem", coordinates: [35.2137, 31.7683] },
-       { name: "Seoul", coordinates: [126.9780, 37.5665] },
-       { name: "Hong Kong", coordinates: [114.1694, 22.3193] },
-       { name: "Bangkok", coordinates: [100.5018, 13.7563] },
-       { name: "New Delhi", coordinates: [77.1025, 28.6139] },
-       { name: "Jakarta", coordinates: [106.8456, -6.2088] },
-       { name: "San Francisco", coordinates: [-122.4194, 37.7749] },
-       { name: "Barcelona", coordinates: [2.1734, 41.3851] },
-       { name: "Amsterdam", coordinates: [4.9041, 52.3676] },
-       { name: "Vienna", coordinates: [16.3738, 48.2082] },
-       { name: "Stockholm", coordinates: [18.0686, 59.3293] },
-       { name: "Copenhagen", coordinates: [12.5683, 55.6761] },
-       { name: "Helsinki", coordinates: [24.9384, 60.1699] },
-       { name: "Oslo", coordinates: [10.7522, 59.9139] },
-       { name: "Warsaw", coordinates: [21.0122, 52.2297] },
-       { name: "Prague", coordinates: [14.4378, 50.0755] },
-       { name: "Lisbon", coordinates: [-9.1393, 38.7223] },
-       { name: "Madrid", coordinates: [-3.7038, 40.4168] },
-       { name: "Athens", coordinates: [23.7275, 37.9838] },
-       { name: "Bucharest", coordinates: [26.1025, 44.4268] },
-       { name: "Buenos Aires", coordinates: [-58.3816, -34.6037] },
-       { name: "Santiago", coordinates: [-70.6693, -33.4489] },
-       { name: "Lima", coordinates: [-77.0428, -12.0464] },
-       { name: "Bogotá", coordinates: [-74.0721, 4.7110] },
-       { name: "Nairobi", coordinates: [36.8219, -1.2921] },
-       { name: "Lagos", coordinates: [3.3792, 6.5244] },
-       { name: "Johannesburg", coordinates: [28.0473, -26.2041] },
-       { name: "Casablanca", coordinates: [-7.5898, 33.5731] },
-       { name: "Rabat", coordinates: [-6.8498, 34.0209] },
-       { name: "Manila", coordinates: [120.9842, 14.5995] },
-       { name: "Hanoi", coordinates: [105.8412, 21.0278] },
-       { name: "Kuala Lumpur", coordinates: [101.6869, 3.1390] },
-       { name: "Taipei", coordinates: [121.5654, 25.0330] }
-   ];
+  const globalCities = [
+      { name: "New York", coordinates: [-74.0060, 40.7128] },
+      { name: "London", coordinates: [-0.1278, 51.5074] },
+      { name: "Tokyo", coordinates: [139.6903, 35.6762] },
+      { name: "Paris", coordinates: [2.3522, 48.8566] },
+      { name: "Sydney", coordinates: [151.2093, -33.8688] },
+      { name: "Rio de Janeiro", coordinates: [-43.1729, -22.9068] },
+      { name: "Dubai", coordinates: [55.2708, 25.2048] },
+      { name: "Moscow", coordinates: [37.6173, 55.7558] },
+      { name: "Beijing", coordinates: [116.4074, 39.9042] },
+      { name: "Los Angeles", coordinates: [-118.2437, 34.0522] },
+      { name: "Cape Town", coordinates: [18.4241, -33.9249] },
+      { name: "Mumbai", coordinates: [72.8777, 19.0760] },
+      { name: "Berlin", coordinates: [13.4050, 52.5200] },
+      { name: "Toronto", coordinates: [-79.3832, 43.6532] },
+      { name: "Singapore", coordinates: [103.8198, 1.3521] },
+      { name: "Cairo", coordinates: [31.2357, 30.0444] },
+      { name: "Mexico City", coordinates: [-99.1332, 19.4326] },
+      { name: "Rome", coordinates: [12.4964, 41.9028] },
+      { name: "Istanbul", coordinates: [28.9784, 41.0082] },
+      { name: "Jerusalem", coordinates: [35.2137, 31.7683] },
+      { name: "Seoul", coordinates: [126.9780, 37.5665] },
+      { name: "Hong Kong", coordinates: [114.1694, 22.3193] },
+      { name: "Bangkok", coordinates: [100.5018, 13.7563] },
+      { name: "New Delhi", coordinates: [77.1025, 28.6139] },
+      { name: "Jakarta", coordinates: [106.8456, -6.2088] },
+      { name: "San Francisco", coordinates: [-122.4194, 37.7749] },
+      { name: "Barcelona", coordinates: [2.1734, 41.3851] },
+      { name: "Amsterdam", coordinates: [4.9041, 52.3676] },
+      { name: "Vienna", coordinates: [16.3738, 48.2082] },
+      { name: "Stockholm", coordinates: [18.0686, 59.3293] },
+      { name: "Copenhagen", coordinates: [12.5683, 55.6761] },
+      { name: "Helsinki", coordinates: [24.9384, 60.1699] },
+      { name: "Oslo", coordinates: [10.7522, 59.9139] },
+      { name: "Warsaw", coordinates: [21.0122, 52.2297] },
+      { name: "Prague", coordinates: [14.4378, 50.0755] },
+      { name: "Lisbon", coordinates: [-9.1393, 38.7223] },
+      { name: "Madrid", coordinates: [-3.7038, 40.4168] },
+      { name: "Athens", coordinates: [23.7275, 37.9838] },
+      { name: "Bucharest", coordinates: [26.1025, 44.4268] },
+      { name: "Buenos Aires", coordinates: [-58.3816, -34.6037] },
+      { name: "Santiago", coordinates: [-70.6693, -33.4489] },
+      { name: "Lima", coordinates: [-77.0428, -12.0464] },
+      { name: "Bogotá", coordinates: [-74.0721, 4.7110] },
+      { name: "Nairobi", coordinates: [36.8219, -1.2921] },
+      { name: "Lagos", coordinates: [3.3792, 6.5244] },
+      { name: "Johannesburg", coordinates: [28.0473, -26.2041] },
+      { name: "Casablanca", coordinates: [-7.5898, 33.5731] },
+      { name: "Rabat", coordinates: [-6.8498, 34.0209] },
+      { name: "Manila", coordinates: [120.9842, 14.5995] },
+      { name: "Hanoi", coordinates: [105.8412, 21.0278] },
+      { name: "Kuala Lumpur", coordinates: [101.6869, 3.1390] },
+      { name: "Taipei", coordinates: [121.5654, 25.0330] }
+  ];
 
-   let treasureMarkers = [];
+  let treasureMarkers = [];
 
-   function generateTreasures(count = 5) {
-       treasureMarkers.forEach(marker => marker.remove());
-       treasureMarkers = [];
+  function generateTreasures(count = 5) {
+      treasureMarkers.forEach(marker => marker.remove());
+      treasureMarkers = [];
 
-       const shuffledCities = globalCities.sort(() => 0.5 - Math.random());
-       const selectedCities = shuffledCities.slice(0, count);
+      const shuffledCities = globalCities.sort(() => 0.5 - Math.random());
+      const selectedCities = shuffledCities.slice(0, count);
 
-       selectedCities.forEach(treasure => {
-           const el = document.createElement('div');
-           el.className = 'treasure-marker';
+      const treasureData = {
+          type: 'treasure_locations',
+          timestamp: Date.now(),
+          cities: selectedCities.map(treasure => ({
+              name: treasure.name,
+              coordinates: {
+                  latitude: treasure.coordinates[1],
+                  longitude: treasure.coordinates[0]
+              }
+          }))
+      };
 
-           const marker = new mapboxgl.Marker(el)
-               .setLngLat(treasure.coordinates)
-               .setPopup(
-                   new mapboxgl.Popup({ offset: 25 })
-                       .setHTML(`
-                           <h3 style="color: #FF7A00; margin: 0;">${treasure.name} Treasure</h3>
-                           <button onclick="openTreasureLocation(${treasure.coordinates[1]}, ${treasure.coordinates[0]}, '${treasure.name} Treasure')" 
-                                   style="background: #FF7A00; color: white; border: none; padding: 5px 10px; margin-top: 5px; border-radius: 5px; cursor: pointer;">
-                               Start Hunt
-                           </button>
-                       `)
-               )
-               .addTo(map);
+      WebApp.sendData(JSON.stringify(treasureData));
 
-           treasureMarkers.push(marker);
-       });
-   }
+      selectedCities.forEach(treasure => {
+          const el = document.createElement('div');
+          el.className = 'treasure-marker';
 
-   let userLocationMarker = null;
+          const marker = new mapboxgl.Marker(el)
+              .setLngLat(treasure.coordinates)
+              .setPopup(
+                  new mapboxgl.Popup({ offset: 25 })
+                      .setHTML(`
+                          <h3 style="color: #FF7A00; margin: 0;">${treasure.name} Treasure</h3>
+                          <button onclick="openTreasureLocation(${treasure.coordinates[1]}, ${treasure.coordinates[0]}, '${treasure.name} Treasure')" 
+                                  style="background: #FF7A00; color: white; border: none; padding: 5px 10px; margin-top: 5px; border-radius: 5px; cursor: pointer;">
+                              Start Hunt
+                          </button>
+                      `)
+              )
+              .addTo(map);
 
-   const geolocationButton = document.getElementById('geolocation-button');
-   
-   geolocationButton.addEventListener('click', () => {
-       if (navigator.geolocation) {
-           navigator.geolocation.getCurrentPosition(
-               (position) => {
-                   const { latitude, longitude } = position.coords;
-                   
-                   if (userLocationMarker) {
-                       userLocationMarker.remove();
-                   }
+          treasureMarkers.push(marker);
+      });
+  }
 
-                   const el = document.createElement('div');
-                   el.style.width = '30px';
-                   el.style.height = '30px';
-                   el.style.backgroundColor = 'blue';
-                   el.style.borderRadius = '50%';
-                   el.style.border = '3px solid white';
-                   el.style.boxShadow = '0 0 10px rgba(0,0,255,0.5)';
+  let userLocationMarker = null;
 
-                   userLocationMarker = new mapboxgl.Marker(el)
-                       .setLngLat([longitude, latitude])
-                       .addTo(map);
+  const geolocationButton = document.getElementById('geolocation-button');
+  
+  geolocationButton.addEventListener('click', () => {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  const { latitude, longitude } = position.coords;
+                  
+                  if (userLocationMarker) {
+                      userLocationMarker.remove();
+                  }
 
-                   map.flyTo({
-                       center: [longitude, latitude],
-                       zoom: 10,
-                       essential: true
-                   });
+                  const el = document.createElement('div');
+                  el.style.width = '30px';
+                  el.style.height = '30px';
+                  el.style.backgroundColor = 'blue';
+                  el.style.borderRadius = '50%';
+                  el.style.border = '3px solid white';
+                  el.style.boxShadow = '0 0 10px rgba(0,0,255,0.5)';
 
-                   const popup = new mapboxgl.Popup({ offset: 25 })
-                       .setHTML(`
-                           <h3>Your Current Location</h3>
-                           <p>Latitude: ${latitude.toFixed(4)}</p>
-                           <p>Longitude: ${longitude.toFixed(4)}</p>
-                       `);
+                  userLocationMarker = new mapboxgl.Marker(el)
+                      .setLngLat([longitude, latitude])
+                      .addTo(map);
 
-                   userLocationMarker.setPopup(popup);
+                  map.flyTo({
+                      center: [longitude, latitude],
+                      zoom: 10,
+                      essential: true
+                  });
 
-                   WebApp.sendData(JSON.stringify({
-                       type: 'user_location',
-                       latitude: latitude,
-                       longitude: longitude
-                   }));
+                  const popup = new mapboxgl.Popup({ offset: 25 })
+                      .setHTML(`
+                          <h3>Your Current Location</h3>
+                          <p>Latitude: ${latitude.toFixed(4)}</p>
+                          <p>Longitude: ${longitude.toFixed(4)}</p>
+                      `);
 
-                   if (WebApp.HapticFeedback) {
-                       WebApp.HapticFeedback.impactOccurred('light');
-                   }
-               },
-               (error) => {
-                   let errorMessage = '';
-                   switch(error.code) {
-                       case error.PERMISSION_DENIED:
-                           errorMessage = "Location access denied. Please enable location permissions.";
-                           break;
-                       case error.POSITION_UNAVAILABLE:
-                           errorMessage = "Location information is unavailable.";
-                           break;
-                       case error.TIMEOUT:
-                           errorMessage = "Location request timed out.";
-                           break;
-                       default:
-                           errorMessage = "An unknown error occurred while finding your location.";
-                   }
-                   
-                   console.error(errorMessage);
-               },
-               {
-                   enableHighAccuracy: true,
-                   timeout: 5000,
-                   maximumAge: 0
-               }
-           );
-       } else {
-           console.error("Geolocation is not supported by this browser.");
-       }
-   });
+                  userLocationMarker.setPopup(popup);
 
-   map.addControl(new mapboxgl.NavigationControl({
-       showCompass: false
-   }), 'top-right');
+                  WebApp.sendData(JSON.stringify({
+                      type: 'user_location',
+                      latitude: latitude,
+                      longitude: longitude
+                  }));
 
-   map.on('load', () => {
-       map.setFog({
-           color: 'rgb(186, 210, 235)',
-           'high-color': 'rgb(36, 92, 223)',
-           'horizon-blend': 0.02
-       });
+                  if (WebApp.HapticFeedback) {
+                      WebApp.HapticFeedback.impactOccurred('light');
+                  }
+              },
+              (error) => {
+                  let errorMessage = '';
+                  switch(error.code) {
+                      case error.PERMISSION_DENIED:
+                          errorMessage = "Location access denied. Please enable location permissions.";
+                          break;
+                      case error.POSITION_UNAVAILABLE:
+                          errorMessage = "Location information is unavailable.";
+                          break;
+                      case error.TIMEOUT:
+                          errorMessage = "Location request timed out.";
+                          break;
+                      default:
+                          errorMessage = "An unknown error occurred while finding your location.";
+                  }
+                  
+                  console.error(errorMessage);
+              },
+              {
+                  enableHighAccuracy: true,
+                  timeout: 5000,
+                  maximumAge: 0
+              }
+          );
+      } else {
+          console.error("Geolocation is not supported by this browser.");
+      }
+  });
 
-       map.addLayer({
-           id: 'atmosphere',
-           type: 'sky',
-           paint: {
-               'sky-type': 'atmosphere',
-               'sky-atmosphere-sun': [0.0, 90.0],
-               'sky-atmosphere-sun-intensity': 15
-           }
-       });
+  map.addControl(new mapboxgl.NavigationControl({
+      showCompass: false
+  }), 'top-right');
 
-       generateTreasures();
-       setInterval(generateTreasures, 5 * 60 * 1000);
-   });
+  map.on('load', () => {
+      map.setFog({
+          color: 'rgb(186, 210, 235)',
+          'high-color': 'rgb(36, 92, 223)',
+          'horizon-blend': 0.02
+      });
 
-   document.querySelectorAll('.pill-icon').forEach(icon => {
-       icon.addEventListener('click', function() {
-           document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
-           this.classList.add('active');
-           document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-           document.getElementById(this.dataset.section).classList.add('active');
-       });
-   });
+      map.addLayer({
+          id: 'atmosphere',
+          type: 'sky',
+          paint: {
+              'sky-type': 'atmosphere',
+              'sky-atmosphere-sun': [0.0, 90.0],
+              'sky-atmosphere-sun-intensity': 15
+          }
+      });
 
-   const socialFab = document.querySelector('.social-fab');
-   if (socialFab) {
-       socialFab.addEventListener('click', function(event) {
-           event.stopPropagation();
-           this.classList.toggle('menu-open');
-       });
+      generateTreasures();
+      setInterval(generateTreasures, 5 * 60 * 1000);
+  });
 
-       document.addEventListener('click', function(event) {
-           if (socialFab && !socialFab.contains(event.target)) {
-               socialFab.classList.remove('menu-open');
-           }
-       });
-   }
+  document.querySelectorAll('.pill-icon').forEach(icon => {
+      icon.addEventListener('click', function() {
+          document.querySelectorAll('.pill-icon').forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+          document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+          document.getElementById(this.dataset.section).classList.add('active');
+      });
+  });
+
+  const socialFab = document.querySelector('.social-fab');
+  if (socialFab) {
+      socialFab.addEventListener('click', function(event) {
+          event.stopPropagation();
+          this.classList.toggle('menu-open');
+      });
+
+      document.addEventListener('click', function(event) {
+          if (socialFab && !socialFab.contains(event.target)) {
+              socialFab.classList.remove('menu-open');
+          }
+      });
+  }
 });
 
 function openTreasureLocation(lat, lng, name) {
-   const WebApp = window.Telegram.WebApp;
-   if (WebApp.openMap) {
-       WebApp.openMap({
-           latitude: lat,
-           longitude: lng,
-           zoom: 15,
-           title: name
-       });
-   }
+  const WebApp = window.Telegram.WebApp;
+  if (WebApp.openMap) {
+      WebApp.openMap({
+          latitude: lat,
+          longitude: lng,
+          zoom: 15,
+          title: name
+      });
+  }
 }
 </script>
 </body>
